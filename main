@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstring>
 using namespace std;
-
+//NEED PICKUP DESTINATION, CHANGE IF CURNUM=0 TO AT THE MAIN FUNCTION
 string *allDestinations; //Initializes a string pointer globally to point to an array of strings representing the possible destinations.
 
 class Ride //Creates a class to represents a ride.
