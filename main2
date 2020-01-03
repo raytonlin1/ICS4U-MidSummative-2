@@ -1,3 +1,10 @@
+/*
+Name: Rayton Lin
+Teacher: Mr. Noukhovitch
+Class: ICS4U1-03
+Date: January 5th, 2019
+Purpose: This program stores information for a ride sharing app using classes, inheritance, constructors, destructors, functions, exceptions and dynamic memory.
+*/
 #include <iostream>
 #include <cstring>
 using namespace std;
@@ -25,10 +32,11 @@ public:			//These are public methods.
     virtual void printCurrentDestinations(){}; //Method that prints the current destinations of the car. This is a virtual function that is only used in the subclasses.
     virtual void addDestination() {}; //Method that adds a destination for a carpool. This is a virtual function that is only used in the Carpool subclass.
     virtual void setDestination() {}; //Method that sets the destination for a regular ride. This is a virtual function that is only used in the Regular subclass.
+    virtual void setDestination(string inpDest) {}; //Overloaded method that sets the destination for a regular ride to the parameter. This is a virtual function that is only used in the Regular subclass.
+    virtual void reserveSeats() {}; //Method that reserves seats in the Carpool sublass. This is a virtual function that is only used in the Carpool subclass.
     virtual void unreserveSeats() {}; //Method that unreserves seats in the Carpool sublass. This is a virtual function that is only used in the Carpool subclass.
     virtual void removeDestination() {}; //Method that removes a destination for a carpool. This is a virtual function that is only used in the Carpool subclass.
     virtual void clearDestinations() {}; //Method that clears the destinations that the carpool is currently going to. This is a virtual function that is only used in the Carpool subclass.
-    virtual void reserveSeats() {}; //Method that reserves seats in a carpool. This is a virtual function that is only used in the Carpool subclass.
     friend class RideList; //Make the RideList class a friend class.
 };
 
@@ -208,6 +216,7 @@ public:
     Regular(int inpNumOfSeats) {active=false; typeOfRide="Regular"; numOfSeats=inpNumOfSeats; destination=""; possibleDestinations=new bool[allNumOfDestinations];}; //Constructor for a regular ride.
     ~Regular() {delete possibleDestinations;}; //Destructor for when the ride is deleted.
     void setDestination(); //Method that sets the destination for the ride. 
+    void setDestination(string inpDest); //Overloaded method that sets the destination for the ride to the parameter.
     void printCurrentDestinations(); //Method that prints the current destination of the car.
 private:
     string destination; //Member that stores the destination.
@@ -230,6 +239,12 @@ void Regular::setDestination()
     {
         destination=allDestinations[inpDestinationNo];
     }
+}
+
+void Regular::setDestination(string inpDest)
+{
+    
+    destination=inpDest;
 }
 
 void Regular::printCurrentDestinations()
@@ -703,7 +718,7 @@ void RideList::complete() //Method that completes a ride.
         }
         else if (rides[carNumber]->getTypeOfRide()=="Regular")
         {
-            rides[carNumber]->setDestination(); //Sets the destination to an empty string.
+            rides[carNumber]->setDestination(""); //Sets the destination to an empty string.
         }
     }
     else //If the car is not in a ride, this block of code runs.
