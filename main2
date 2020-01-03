@@ -20,8 +20,9 @@ protected:			//These are protected members that can only be accessed by the publ
     int numOfSeats; //Integer member that stores the number of seats in the car.
     string typeOfRide; //String member that stores the type of ride it is.
     bool *possibleDestinations; //Member that points to an array of bools representing the possible destinations it can go to.
+    string initialPickup; //String member that holds the initial pickup location of a ride.
 public:			//These are public methods.
-    Ride() {active=false; typeOfRide="Uncreated"; possibleDestinations=new bool[allNumOfDestinations];}; //Constructor for a ride.
+    Ride() {active=false; typeOfRide="Uncreated"; possibleDestinations=new bool[allNumOfDestinations]; initialPickup="";}; //Constructor for a ride.
     ~Ride() {delete possibleDestinations;}; //Destructor for when the ride is finished.
     bool getActive() {return active;}; //Method that returns whether the car is active for a ride or not.
     void switchActive() {active=!active;}; //Method that switches the active boolean member from false to true, or true to false.
@@ -29,6 +30,7 @@ public:			//These are public methods.
     int getNumOfSeats() {return numOfSeats;}; //Method that returns the number of seats in the car.
     virtual int getNumOfReservedSeats(){}; //Method that returns the number of reserved seats in the Carpool subclass. This is a virtual function that is only used in the Carpool subclass.
     void printPossibleDestinations(); //Method that prints the possible destinations for the ride. 
+    void setInitialPickup(); //Method that sets the initial pickup location for the ride.
     virtual void printCurrentDestinations(){}; //Method that prints the current destinations of the car. This is a virtual function that is only used in the subclasses.
     virtual void addDestination() {}; //Method that adds a destination for a carpool. This is a virtual function that is only used in the Carpool subclass.
     virtual void setDestination() {}; //Method that sets the destination for a regular ride. This is a virtual function that is only used in the Regular subclass.
@@ -62,10 +64,27 @@ void Ride::printPossibleDestinations() //Method that prints the possible destina
     cout<<"\n";
 }
 
+void Ride::setInitialPickup()
+{
+    string inpPickup; //Initializes a local variable storing the input pickup location.
+    do
+    {
+        cout<<"Enter the name of the destination: ";
+        cin.ignore(); //Used to ignore any newline character from a previous use of cin, so getline(cin,inpPickup) will obtain inputs correctly.
+        getline(cin,inpPickup);
+        cout<<"\n";
+        if (inpPickup=="")
+        {
+            cout<<"The name of the destination can not be empty.\n";
+        }
+    }while (inpPickup=="");
+    initialPickup=inpPickup;
+}
+
 class Carpool : public Ride
 {
 public:
-    Carpool(int inpNumOfSeats) {active=false; typeOfRide="Carpool"; numOfSeats=inpNumOfSeats; numOfReservedSeats=0; numOfCurDestinations=0; destinations=new bool[allNumOfDestinations]; possibleDestinations=new bool[allNumOfDestinations];}; //Constructor for a carpool.
+    Carpool(int inpNumOfSeats) {active=false; typeOfRide="Carpool"; numOfSeats=inpNumOfSeats; initialPickup=""; numOfReservedSeats=0; numOfCurDestinations=0; destinations=new bool[allNumOfDestinations]; possibleDestinations=new bool[allNumOfDestinations];}; //Constructor for a carpool.
     ~Carpool() {delete possibleDestinations; delete destinations;}; //Destructor for when the carpool is deleted.
     int getNumOfReservedSeats() {return numOfReservedSeats;}; //Method that returns the number of reserved seats in the carpool.
     void addDestination(int numOfDestinations); //Method that adds a destination for the ride. 
@@ -213,7 +232,7 @@ void Carpool::printCurrentDestinations()
 class Regular : public Ride
 {
 public:
-    Regular(int inpNumOfSeats) {active=false; typeOfRide="Regular"; numOfSeats=inpNumOfSeats; destination=""; possibleDestinations=new bool[allNumOfDestinations];}; //Constructor for a regular ride.
+    Regular(int inpNumOfSeats) {active=false; typeOfRide="Regular"; numOfSeats=inpNumOfSeats; initialPickup=""; destination=""; possibleDestinations=new bool[allNumOfDestinations];}; //Constructor for a regular ride.
     ~Regular() {delete possibleDestinations;}; //Destructor for when the ride is deleted.
     void setDestination(); //Method that sets the destination for the ride. 
     void setDestination(string inpDest); //Overloaded method that sets the destination for the ride to the parameter.
@@ -421,6 +440,14 @@ void RideList::printRides() //Method that prints the status of each ride.
                 cout<<"Number of Reserved Seats: "<<rides[i]->getNumOfReservedSeats()<<"\n";
                 rides[i]->printPossibleDestinations();
                 rides[i]->printCurrentDestinations();
+                if (rides[i]->initialPickup=="")
+                {
+                    cout<<"The initial pickup location has not been set.\n";
+                }
+                else
+                {
+                    cout<<"The initial pickup location is: "<<rides[i]->initialPickup<<"\n";
+                }
             }
         else if (rides[i]->getTypeOfRide()=="Regular")
             {
@@ -436,6 +463,14 @@ void RideList::printRides() //Method that prints the status of each ride.
                 cout<<"Number of Seats: "<<rides[i]->getNumOfSeats()<<"\n";
                 rides[i]->printPossibleDestinations();
                 rides[i]->printCurrentDestinations();
+                if (rides[i]->initialPickup=="")
+                {
+                    cout<<"The initial pickup location has not been set.\n";
+                }
+                else
+                {
+                    cout<<"The initial pickup location is: "<<rides[i]->initialPickup<<"\n";
+                }
             }
     }
     
@@ -617,6 +652,7 @@ void RideList::reserve() //Method that reserves a ride for a customer.
         {
             rides[carNumber]->addDestination();
             rides[carNumber]->reserveSeats();
+            rides[carNumber]->setInitialPickup();
             if (rides[carNumber]->getActive()==false)
             {
                 rides[carNumber]->switchActive();
@@ -639,6 +675,7 @@ void RideList::reserve() //Method that reserves a ride for a customer.
         {
             this->printDestinations();
             rides[carNumber]->setDestination();
+            rides[carNumber]->setInitialPickup();
         }
     }
 } 
