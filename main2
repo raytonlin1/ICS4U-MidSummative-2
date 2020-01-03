@@ -145,7 +145,7 @@ void Carpool::reserveSeats()
         cout<<"Enter the number of seats to be reserved: ";
         cin>>inpSeats;
         cout<<"\n";
-        if (inpSeats<=0)
+        if (inpSeats<0)
         {
             cout<<"Invalid input. The number of seats to be reserved must be 0 or greater. You can reserve 0 seats if you only want to store items in the carpool and not ride in it.\n";
         }
@@ -157,7 +157,7 @@ void Carpool::reserveSeats()
         {
             numOfReservedSeats+=inpSeats;
         }
-    }while(inpSeats<=0||numOfReservedSeats+inpSeats>numOfSeats);
+    }while(inpSeats<0||numOfReservedSeats+inpSeats>numOfSeats);
 }
 
 void Carpool::unreserveSeats()
@@ -617,6 +617,10 @@ void RideList::reserve() //Method that reserves a ride for a customer.
         {
             rides[carNumber]->addDestination();
             rides[carNumber]->reserveSeats();
+            if (rides[carNumber]->getActive()==false)
+            {
+                rides[carNumber]->switchActive();
+            }
         }
     }
     else if (rides[carNumber]->getTypeOfRide()=="Regular")
