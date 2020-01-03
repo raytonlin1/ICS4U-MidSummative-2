@@ -28,6 +28,7 @@ public:			//These are public methods.
     virtual void unreserveSeats() {}; //Method that unreserves seats in the Carpool sublass. This is a virtual function that is only used in the Carpool subclass.
     virtual void removeDestination() {}; //Method that removes a destination for a carpool. This is a virtual function that is only used in the Carpool subclass.
     virtual void clearDestinations() {}; //Method that clears the destinations that the carpool is currently going to. This is a virtual function that is only used in the Carpool subclass.
+    virtual void reserveSeats() {}; //Method that reserves seats in a carpool. This is a virtual function that is only used in the Carpool subclass.
     friend class RideList; //Make the RideList class a friend class.
 };
 
@@ -75,25 +76,25 @@ private:
 void Carpool::addDestination(int numOfDestinations) //Method that adds a destination for the ride. 
 {
     int inpDestinationNo; //Initializes a local integer variable to store the number of the destination that is being inputted.
-    cout<<"Enter the number of the destination to be added: ";
-    cin>>inpDestinationNo;
-    cout<<"\n";
-    if (inpDestinationNo>numOfDestinations || inpDestinationNo<1)
+    do
     {
-        cout<<"This input is invalid. The number of the destination must be between 1 and "<<numOfDestinations<<".\n";
-    }
-    else
-    {
-        if (!destinations[inpDestinationNo])
+        cout<<"Enter the number of the destination to be added: ";
+        cin>>inpDestinationNo;
+        cout<<"\n";
+        if (inpDestinationNo>numOfDestinations || inpDestinationNo<1)
+        {
+            cout<<"This input is invalid. The number of the destination must be between 1 and "<<numOfDestinations<<".\n";
+        }
+        else if (destinations[inpDestinationNo])
+        {
+            cout<<"This is already a current destination for the carpool.\n";
+        }
+        else
         {
             destinations[inpDestinationNo]=true;
             numOfCurDestinations++;
         }
-        else
-        {
-            cout<<"This is already a current destination for the carpool.\n";
-        }
-    }
+    }while(inpDestinationNo>numOfDestinations || inpDestinationNo<1 || destinations[inpDestinationNo]);
 }
 
 void Carpool::removeDestination(int numOfDestinations) //Method that removes a destination for the ride.
@@ -131,21 +132,24 @@ void Carpool::clearDestinations() //Method that clears the destinations that the
 void Carpool::reserveSeats()
 {
     int inpSeats; //Initializes a local integer variable to store the number of seats.
-    cout<<"Enter the number of seats to be reserved: ";
-    cin>>inpSeats;
-    cout<<"\n";
-    if (inpSeats<=0)
+    do
     {
-        cout<<"Invalid input. The number of seats to be reserved must be positive.\n";
-    }
-    else if (numOfReservedSeats+inpSeats>numOfSeats)
-    {
-        cout<<"Unable to reserve this many seats. Choose a ride that can fit this many seats instead.\n";
-    }
-    else
-    {
-        numOfReservedSeats+=inpSeats;
-    }
+        cout<<"Enter the number of seats to be reserved: ";
+        cin>>inpSeats;
+        cout<<"\n";
+        if (inpSeats<=0)
+        {
+            cout<<"Invalid input. The number of seats to be reserved must be 0 or greater. You can reserve 0 seats if you only want to store items in the carpool and not ride in it.\n";
+        }
+        else if (numOfReservedSeats+inpSeats>numOfSeats)
+        {
+            cout<<"Unable to reserve this many seats.\n";
+        }
+        else
+        {
+            numOfReservedSeats+=inpSeats;
+        }
+    }while(inpSeats<=0||numOfReservedSeats+inpSeats>numOfSeats);
 }
 
 void Carpool::unreserveSeats()
@@ -406,6 +410,15 @@ void RideList::printRides() //Method that prints the status of each ride.
         else if (rides[i]->getTypeOfRide()=="Regular")
             {
                 cout<<i<<". Regular\n";
+                if (rides[i]->getActive()==true)
+                {
+                    cout<<"Status: Unavailable for reservation\n";
+                }
+                else
+                {
+                    cout<<"Status: Available for reservation\n";
+                }
+                cout<<"Number of Seats: "<<rides[i]->getNumOfSeats()<<"\n";
                 rides[i]->printPossibleDestinations();
                 rides[i]->printCurrentDestinations();
             }
@@ -576,10 +589,6 @@ void RideList::reserve() //Method that reserves a ride for a customer.
     }
     else if (rides[carNumber]->getTypeOfRide()=="Carpool")
     {
-        if (rides[carNumber]->getActive()==false)
-        {
-            rides[carNumber]->switchActive();
-        }
         this->printDestinations();
         int inpDestinationNo; //Initializes a local integer variable to store the number of the destination that is being inputted.
         cout<<"Enter the number of the destination to be added: ";
@@ -591,8 +600,8 @@ void RideList::reserve() //Method that reserves a ride for a customer.
         }
         else
         {
-            this->printDestinations();
             rides[carNumber]->addDestination();
+            rides[carNumber]->reserveSeats();
         }
     }
     else if (rides[carNumber]->getTypeOfRide()=="Regular")
@@ -737,6 +746,7 @@ int main()
   
   while (inputCommand != 10)
     {
+      cout<<"\n";
       cout<<"The following commands can be entered.\n";
       cout<<"1. This command creates a new ride. You will be asked to enter the type of ride (regular or carpool), the number of the car, the number of seats in the car and the possible destinations the car can go to.\n";
       cout<<"2. This command deletes a ride. You will be asked for the number of the car to be deleted.\n";
