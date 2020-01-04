@@ -6,7 +6,7 @@ Date: January 5th, 2019
 Purpose: This program stores information for a ride sharing app using classes, inheritance, constructors, destructors, functions, exceptions and dynamic memory.
 */
 
-//ADD UPGRADE TO CHANGE RIDE TO A CARPOOL OR SUPERRIDE FOR INHERITANCE
+//ADD UPGRADE TO CHANGE RIDE TO A CARPOOL OR SUPERRIDE FOR INHERITANCE, polymorphism, virtual method
 
 #include <iostream>
 #include <cstring>
