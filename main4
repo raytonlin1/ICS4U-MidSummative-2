@@ -14,6 +14,31 @@ using namespace std;
 string *allDestinations; //Initializes a string pointer globally to point to an array of strings representing the possible destinations.
 int allNumOfDestinations; //Initializes a global integer variable storing the number of destinations.
 
+string negInputRides="Invalid input. The number of rides must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
+string negInputDestinations="Invalid input. The number of destinations must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
+
+void askForNumOfRides(int &inp)
+{
+    cout << "Enter the maximum number of rides that can be stored. Car ID numbers will go from 1 to this number: ";
+    cin >> inp; //Stores the input.
+    cout << "\n"; //Asks for an inputted number for the number of rides.
+    if (inp<1) //Checks if the input is valid.
+    {
+        throw negInputRides;
+    } 
+}
+
+void askForNumOfDestinations(int &inp)
+{
+    cout << "Enter the number of destinations: ";
+    cin >> inp; //Stores the input.
+    cout << "\n"; //Asks for an inputted number for the number of destinations.
+    if (inp<1) //Checks if the input is valid.
+    {
+        throw negInputDestinations;
+    }
+}
+
 class Ride //Creates a class to represents a ride.
 {
 protected:			//These are protected members that can only be accessed by the public methods in this class or any subclasses.
@@ -107,6 +132,15 @@ void Ride::setInitialPickup() //Method that sets the initial pickup location.
 void Ride::setInitialPickup(string inp) //Overloaded method that sets the initial pickup location given an input.
 {
     initialPickup=inp; //Sets the initial pickup location to the input.
+}
+
+class Station: public Ride
+{
+private:
+    int numOfReservedSeats; // 
+public:
+    void reserveSeats();
+    void unreserveSeats(); 
 }
 
 class RideList
@@ -324,33 +358,39 @@ void RideList::showCarsToDestination() //Method that shows the cars that can get
 int main()
 {
   int inputCommand=0;		//Initializes an integer variable that stores inputted commands.
-  int maxNumberOfRides=0,maxNumOfDestinations=0; //Initializes integer variables storing the maximum number of rides and destinations in the ride-sharing app.
+  int inpNumOfRides=0,inpNumOfDestinations=0; //Initializes integer variables storing the maximum number of rides and destinations in the ride-sharing app.
+  bool notDone; //Initializes a local boolean variable to determine if the loop isn't done yet.
+  do
+  {
+      notDone=true; 
+      try
+      {
+          askForNumOfRides(inpNumOfRides); //Function that asks for the number of rides.
+          notDone=false;
+      }
+      catch (string &problem) //Catches a string if one is thrown.
+      {
+          cout<<problem<<"\n"; //Prints the string.
+      }
+  }while (notDone);
   
   do
   {
-    cout << "Enter the maximum number of rides that can be stored. Car ID numbers will go from 1 to this number: ";
-    cin >> maxNumberOfRides; //Stores the input.
-    cout << "\n"; //Asks for an inputted number for the number of rides.
-    if (maxNumberOfRides<1) //Checks if the input is valid.
-    {
-        cout<<"Invalid input. The maximum number of rides must be positive.\n";
-    }
-  } while(maxNumberOfRides<1);
+      notDone=true; //Initializes a local boolean variable to determine if the loop isn't done yet.
+      try
+      {
+          askForNumOfDestinations(inpNumOfDestinations); //Function that asks for the number of destinations.
+          notDone=false;
+      }
+      catch (string &problem) //Catches a string if one is thrown.
+      {
+          cout<<problem<<"\n"; //Prints the string.
+      }
+  } while(notDone);
   
-  do
-  {
-    cout << "Enter the number of destinations: ";
-    cin >> maxNumOfDestinations; //Stores the input.
-    cout << "\n"; //Asks for an inputted number for the number of destinations.
-    if (maxNumOfDestinations<1) //Checks if the input is valid.
-    {
-        cout<<"Invalid input. The number of destinations must be positive.\n";
-    }
-  } while(maxNumOfDestinations<1);
-  
-  allNumOfDestinations=maxNumOfDestinations; //Sets the global variable storing the number of destinations to the input provided.
+  allNumOfDestinations=inpNumOfDestinations; //Sets the global variable storing the number of destinations to the input provided.
   RideList* rides; //Initializes a pointer to a RideList.
-  rides=new RideList(maxNumberOfRides); //Creates an object holding a list of rides that the pointer points to.
+  rides=new RideList(inpNumOfRides); //Creates an object holding a list of rides that the pointer points to.
   rides->setDestinations(); //Asks the user to set all the destinations the rides can go to.
   rides->setCars(); //Asks the user to set the parameters for all the cars in the list.
   
