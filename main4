@@ -6,8 +6,6 @@ Date: January 5th, 2019
 Purpose: This program stores information for a ride sharing app using classes, inheritance, constructors, destructors, functions, exceptions and dynamic memory.
 */
 
-//ADD UPGRADE TO CHANGE RIDE TO A CARPOOL OR SUPERRIDE FOR INHERITANCE, polymorphism, virtual method
-
 #include <iostream>
 #include <cstring>
 using namespace std;
@@ -41,16 +39,19 @@ void askForNumOfDestinations(int &inp)
 
 class Ride //Creates a class to represents a ride.
 {
-protected:			//These are protected members that can only be accessed by the public methods in this class or any subclasses.
+protected: //These are protected members that can only be accessed by the public methods in this class, friend classes or any subclasses.
     bool active; //Boolean member that stores whether the car has been assigned to a ride.
+    bool shared; //Boolean member that stores whether the ride is shared.
     int numOfSeats; //Integer member that stores the number of seats in the car.
     bool *possibleDestinations; //Member that points to an array of bools representing the possible destinations it can go to.
     string initialPickup; //String member that holds the initial pickup location of a ride.
     int curDestination; //String member to hold the current destination for a ride.
-public:			//These are public methods.
+public:	//These are public methods.
+    Ride() {}; //Empty constructor for when there are no parameters.
     Ride(int inpNumOfSeats) //Constructor for a ride.
     {   
         active=false; 
+        shared=false;
         numOfSeats=inpNumOfSeats; 
         possibleDestinations=new bool[allNumOfDestinations+1]; 
         for(int i=0;i<=allNumOfDestinations;i++) 
@@ -60,13 +61,35 @@ public:			//These are public methods.
         initialPickup=""; 
         curDestination=0;
     }; 
-    bool getActive() {return active;}; //Method that returns the active member.
+    Ride(int inpNumOfSeats,bool* prevPosDes) //Constructor for a ride with possible destinations.
+    {   
+        active=false; 
+        shared=false;
+        numOfSeats=inpNumOfSeats; 
+        possibleDestinations=new bool[allNumOfDestinations+1]; 
+        for(int i=0;i<=allNumOfDestinations;i++) 
+        {
+            possibleDestinations[i]=prevPosDes[i];
+        } 
+        initialPickup=""; 
+        curDestination=0;
+    }; 
+    ~Ride() {delete[] possibleDestinations;}; //Destructor for a ride.
+    bool getActive() {return active;}; //Method that returns whether the ride is active.
     void switchActive() {active=!active;}; //Method that switches the value of the active member.
+    bool getShared() {return shared;}; //Method that returns the ride is shared.
+    int getNumOfSeats() {return numOfSeats;}; //Method that returns the number of seats.
+    bool* getPossibleDestinations() {return possibleDestinations;}; //Method that returns the possible destinations of the car.
+    string getInitialPickup() {return initialPickup;}; //Method that returns the initial pickup destination.
+    int getCurDestination() {return curDestination;}; //Method that returns the current destination of the ride.
     void printPossibleDestinations(); //Methods that print the possible destinations for a ride.
     void setCurDestination(); //Method that sets the destination of a ride.
     void setCurDestination(int inp); //Overloaded method that sets the destination of a ride given an input.
     void setInitialPickup(); //Method that sets the initial pickup location.
     void setInitialPickup(string inp); //Overloaded method that sets the initial pickup location given an input.
+    virtual void reserveSeats(){}; //Virtual method that reserves seats. It is only used in shared rides.
+    virtual bool unreserveSeats(){}; //Virtual method that unreserves seats. It is only used in shared rides.
+    virtual int getNumOfReservedSeats(){}; //Virtual method that returns the number of reserved seats. It is only used in shared rides.
     
     friend class RideList; //Makes RideList a friend class, so it can access protected members.
 };
@@ -114,19 +137,26 @@ void Ride::setCurDestination(int inp) //Overloaded method that sets the destinat
 
 void Ride::setInitialPickup() //Method that sets the initial pickup location.
 {
-    string inpPickup; //Initializes a local variable storing the input pickup location.
+    this->printPossibleDestinations(); //Prints the possible destinations of the ride to the reader.
+    int inpDestination; //Initializes a local integer variable to store the inputted destination.
     do
     {
-        cout<<"Enter the name of the pickup location: ";
-        cin.ignore(); //Used to ignore any newline character from a previous use of cin, so getline(cin,inpPickup) will obtain inputs correctly.
-        getline(cin,inpPickup);
+        cout<<"Enter the number of the pickup destination: ";
+        cin>>inpDestination; //Stores the input.
         cout<<"\n";
-        if (inpPickup=="")
+        if (inpDestination>allNumOfDestinations||inpDestination<1) //Checks if the input is within the boundaries.
         {
-            cout<<"The name of the destination can not be empty.\n";
+            cout<<"Invalid input. The input must be between 1 and "<<allNumOfDestinations<<".\n";
         }
-    }while (inpPickup=="");
-    initialPickup=inpPickup;
+        else if (!possibleDestinations[inpDestination]) //Checks if the location is possible to get to.
+        {
+            cout<<"This location is not possible to get to. Choose another one.\n";
+        }
+        else
+        {
+            initialPickup=allDestinations[inpDestination]; //Sets the initial pickup location to the input.
+        }
+    }while (inpDestination>allNumOfDestinations||inpDestination<1||!possibleDestinations[inpDestination]);
 }
 
 void Ride::setInitialPickup(string inp) //Overloaded method that sets the initial pickup location given an input.
@@ -134,13 +164,93 @@ void Ride::setInitialPickup(string inp) //Overloaded method that sets the initia
     initialPickup=inp; //Sets the initial pickup location to the input.
 }
 
-class Station: public Ride
+class Shared: public Ride
 {
-private:
-    int numOfReservedSeats; // 
-public:
-    void reserveSeats();
-    void unreserveSeats(); 
+private: //These are protected members that can only be accessed by the public methods in this class or any subclasses.
+    int numOfReservedSeats; //Integer member storing the number of reserved seats.
+public: //These are public methods.
+    Shared(int inpNumOfSeats) //Constructor for a shared ride.
+    {
+        active=true; 
+        shared=true;
+        numOfSeats=inpNumOfSeats; 
+        possibleDestinations=new bool[allNumOfDestinations+1]; 
+        for(int i=0;i<=allNumOfDestinations;i++) 
+        {
+            possibleDestinations[i]=false;
+        } 
+        initialPickup=""; 
+        curDestination=0;
+        numOfReservedSeats=0;
+    };
+    Shared(int inpNumOfSeats,bool* prevPosDes) //Constructor for a ride with possible destinations.
+    {   
+        active=true; 
+        shared=true;
+        numOfSeats=inpNumOfSeats; 
+        possibleDestinations=new bool[allNumOfDestinations+1]; 
+        for(int i=0;i<=allNumOfDestinations;i++) 
+        {
+            possibleDestinations[i]=prevPosDes[i];
+        } 
+        initialPickup=""; 
+        curDestination=0;
+    }; 
+    ~Shared() {delete[] possibleDestinations;}; //Destructor for a shared ride.
+    void reserveSeats(); //Method that reserves seats.
+    bool unreserveSeats(); //Method that unreserves seats.
+    int getNumOfReservedSeats(){return numOfReservedSeats;}; //Method that returns the number of reserved seats.
+};
+
+void Shared::reserveSeats()
+{
+    int inpSeats; //Initializes a local integer variable to store the number of seats.
+    bool notDone=true;//Initializes if the function is not done.
+    do
+    {
+        cout<<"Enter the number of seats to be reserved (where an input of 0 cancels the reservation): ";
+        cin>>inpSeats;
+        cout<<"\n";
+        if (inpSeats<0)
+        {
+            cout<<"Invalid input. The number of seats to be reserved must non-negative.\n";
+        }
+        else if (numOfReservedSeats+inpSeats>numOfSeats)
+        {
+            cout<<"Unable to reserve this many seats. You may reserve up to "<<numOfSeats-numOfReservedSeats<<" seat(s).\n";
+        }
+        else
+        {
+            numOfReservedSeats+=inpSeats;
+            notDone=false;
+        }
+    }while(notDone);
+}
+
+bool Shared::unreserveSeats()
+{
+    int inpSeats; //Initializes a local integer variable to store the number of seats.
+    cout<<"Enter the number of seats to be unreserved: ";
+    cin>>inpSeats;
+    cout<<"\n";
+    if (inpSeats<1)
+    {
+        cout<<"Invalid input. The number of seats to be unreserved must be positive.\n";
+    }
+    else if (numOfReservedSeats-inpSeats<0)
+    {
+        cout<<"Unable to unreserve this many seats. The number of seats must be less than or equal to "<<numOfReservedSeats<<".\n";
+    }
+    else if (numOfReservedSeats-inpSeats==0)
+    {
+        cout<<"No seats have been reserved in this shared ride. This ride will now be considered completed, and the car will revert to its initial conditions.\n";
+        return false;
+    }
+    else
+    {
+        numOfReservedSeats-=inpSeats;
+    }
+    return true;
 }
 
 class RideList
@@ -155,6 +265,8 @@ public:
     void setCars(); //Method that sets the parameters for the cars.
     void printDestinations(); //Method that prints each possible destination.
     void reserve(); //Method that reserves a ride.
+    void reserveSeats(); //Method that reserves seats for a shared ride.
+    void unreserveSeats(); //Method that unreserves seats for a shared ride.
     void complete(); //Method that completes a ride.
     void showCars(); //Method that prints the status of each car.
     void showCarsToDestination(); //Method that prints the cars that can go to an inputted destination.
@@ -211,6 +323,7 @@ void RideList::setCars() //Method that sets the cars in the list.
 {
     int inpNumOfSeats; //Initializes a local integer variable to store the inputted number of seats for a car.
     int inpPossibleDestination; //Initializes a local integer variable to store if a destination is possible.
+    bool hasNoDestinations=true; //Initializes a boolean variable to store if no possible destinations have been set.
     for (int i=1;i<=totalNumOfRides;i++) //Loops through each car.
     {
         cout<<"Enter the information for Car #"<<i<<".\n";
@@ -230,6 +343,13 @@ void RideList::setCars() //Method that sets the cars in the list.
         cout<<"\n";
         for(int j=1;j<=allNumOfDestinations;j++) //Loops through each destination.
         {
+            if (j==allNumOfDestinations && hasNoDestinations) //Checks if it is the last destination and no possible destination has been set yet.
+            {
+                cout<<"No possible destination has been set, so the last destination will be set as possible to go to.\n";
+                rides[i]->possibleDestinations[j]=true; //If so, it sets the index in the possibleDestinations array to true.
+                hasNoDestinations=false;
+                break; //Exits the loop.
+            }
             cout<<"Enter 1 if Destination #"<<j<<" is possible to get to from Car #"<<i<<", or any other integer otherwise: "; 
             cin>>inpPossibleDestination; //Stores the input.
             cout<<"\n";
@@ -237,6 +357,7 @@ void RideList::setCars() //Method that sets the cars in the list.
             if (inpPossibleDestination==1) //Checks if it is possible for the car to get to the destination.
             {
                 rides[i]->possibleDestinations[j]=true; //If so, it sets the index in the possibleDestinations array to true.
+                hasNoDestinations=false; //Stores that a possible destination has been set.
             }
         }
     }
@@ -269,9 +390,105 @@ void RideList::reserve() //Method that reserves a ride.
     }
     else
     {
-        rides[carNumber]->switchActive(); //Sets the active member to true.
+        string typeOfRide=""; //Initializes a local string variable holding the type of ride that is being created.
+        do
+        {
+            cout<<"Enter the type of ride (regular or shared): ";
+            cin>>typeOfRide;
+            cout<<"\n";
+            if (typeOfRide!="regular" && typeOfRide!="shared")
+            {
+                cout<<"Invalid input. Please choose regular or shared for the type of ride.\n";
+            }
+        } while (typeOfRide!="regular" && typeOfRide!="shared");
+        if (typeOfRide=="shared")
+        {
+            int prevNumOfSeats=rides[carNumber]->numOfSeats;
+            bool* prevPossibleDestinations=new bool[allNumOfDestinations+1];
+            for (int i=0;i<=allNumOfDestinations;i++)
+            {
+                prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i];
+            }
+            delete rides[carNumber];
+            rides[carNumber]=new Shared(prevNumOfSeats,prevPossibleDestinations);
+        }
+        else
+        {
+            rides[carNumber]->switchActive(); //Sets the active member to true.
+        }
         rides[carNumber]->setCurDestination(); //Sets the destination the car will go to.
         rides[carNumber]->setInitialPickup(); //Sets the pickup location for the ride.
+        if (typeOfRide=="shared")
+        {
+            rides[carNumber]->reserveSeats();
+            if (rides[carNumber]->getNumOfReservedSeats()==0)
+            {
+                int prevNumOfSeats=rides[carNumber]->numOfSeats;
+                bool* prevPossibleDestinations=new bool[allNumOfDestinations+1];
+                for (int i=0;i<=allNumOfDestinations;i++)
+                {
+                    prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i];
+                }
+                delete rides[carNumber];
+                rides[carNumber]=new Ride(prevNumOfSeats,prevPossibleDestinations);
+                //Sets the car in that location to its initial state.
+            }
+        }
+    }
+}
+
+void RideList::reserveSeats()
+{
+    this->showCars();
+    int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
+    cout<<"Choose the number of the ride that you would like to take: ";
+    cin>>carNumber; //Stores the input.
+    cout<<"\n";
+    
+    if (carNumber>totalNumOfRides||carNumber<1) //Checks if the number for the car is valid.
+    {
+        cout<<"This is not a valid number for a car. A valid car number is between 1 and "<<totalNumOfRides<<".\n";
+    }
+    else if (!rides[carNumber]->getShared()) //Checks if the car is not in a shared ride.
+    {
+        cout<<"This car is currently not in a shared ride.\n";
+    }
+    else
+    {
+        rides[carNumber]->reserveSeats(); //Reserves seats.
+    }
+}
+
+void RideList::unreserveSeats()
+{
+    this->showCars();
+    int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
+    cout<<"Choose the number of the ride that you would like to unreserve seats from: ";
+    cin>>carNumber; //Stores the input.
+    cout<<"\n";
+    
+    if (carNumber>totalNumOfRides||carNumber<1) //Checks if the number for the car is valid.
+    {
+        cout<<"This is not a valid number for a car. A valid car number is between 1 and "<<totalNumOfRides<<".\n";
+    }
+    else if (!rides[carNumber]->getShared()) //Checks if the car is not in a shared ride.
+    {
+        cout<<"This car is currently not in a shared ride.\n";
+    }
+    else
+    {
+        if (!rides[carNumber]->unreserveSeats()) //Unreserves seats and checks if the ride has no seats left that were reserved.
+        {
+            int prevNumOfSeats=rides[carNumber]->numOfSeats;
+            bool* prevPossibleDestinations=new bool[allNumOfDestinations+1];
+            for (int i=0;i<=allNumOfDestinations;i++)
+            {
+                prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i];
+            }
+            delete rides[carNumber];
+            rides[carNumber]=new Ride(prevNumOfSeats,prevPossibleDestinations);
+            //Sets the car in that location to its initial state.
+        }
     }
 }
 
@@ -291,6 +508,18 @@ void RideList::complete() //Method that completes a ride.
     {
         cout<<"This car is not currently in a ride.\n";
     }
+    else if (rides[carNumber]->getShared()) //Checks if the car is in a shared ride.
+    {
+        int prevNumOfSeats=rides[carNumber]->numOfSeats;
+        bool* prevPossibleDestinations=new bool[allNumOfDestinations+1];
+        for (int i=0;i<=allNumOfDestinations;i++)
+        {
+            prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i];
+        }
+        delete rides[carNumber];
+        rides[carNumber]=new Ride(prevNumOfSeats,prevPossibleDestinations);
+        //Sets the car in that location to its initial state.
+    }
     else
     {
         rides[carNumber]->switchActive(); //Sets the active member to false.
@@ -306,7 +535,16 @@ void RideList::showCars() //Method that prints the status of each car.
         cout<<i<<". ";
         if (rides[i]->getActive())  //Checks if the car is in a ride.
         {
-            cout<<"Active\n";
+            cout<<"Active";
+            if (rides[i]->getShared())
+            {
+                cout<<" (Shared)\n";
+                cout<<"Number of Reserved Seats: "<<rides[i]->getNumOfReservedSeats()<<"\n";
+            }
+            else
+            {
+                cout<<"\n";
+            }
             cout<<"Current Destination: "<<allDestinations[rides[i]->curDestination]<<"\n"; //Prints the current destination of the ride.
             cout<<"Initial Pickup for Ride: "<<rides[i]->initialPickup<<"\n"; //Prints the initial pickup for the ride.
         }
@@ -394,15 +632,17 @@ int main()
   rides->setDestinations(); //Asks the user to set all the destinations the rides can go to.
   rides->setCars(); //Asks the user to set the parameters for all the cars in the list.
   
-  while (inputCommand != 8)
+  while (inputCommand != 7)
     {
       cout<<"\n";
       cout<<"The following commands can be entered.\n";
-      cout<<"1. This command makes a reservation for a regular ride. You will be shown the available cars for the ride. You will be asked for the destination and the pickup location.\n";
-      cout<<"2. This command completes the ride for a car, setting the information back to its initial state.\n";
-      cout<<"3. This command shows the information for the available cars.\n";
-      cout<<"4. This command shows the cars which can drive to the destination.\n";
-      cout<<"5. The quit command exits the program.\n";
+      cout<<"1. This command makes a reservation for a ride. You will be shown the available cars for the ride. You will be asked for the type of ride, destination and the pickup location.\n";
+      cout<<"2. This command reserves seats for an existing shared ride.\n";
+      cout<<"3. This command unreserves seats for an existing shared ride.\n";
+      cout<<"4. This command completes the ride for a car, setting the information back to its initial state.\n";
+      cout<<"5. This command shows the information for the available cars.\n";
+      cout<<"6. This command shows the cars which can drive to the destination.\n";
+      cout<<"7. The quit command exits the program.\n";
       cout << "Enter your command, as a number: ";
 	  cin >> inputCommand; //Stores the input.
       cout << "\n";
@@ -412,17 +652,25 @@ int main()
       }
       else if (inputCommand==2)
       {
-          rides->complete(); //Completes a ride.
+          rides->reserveSeats(); //Reserves a ride.
       }
       else if (inputCommand==3)
       {
-          rides->showCars(); //Shows the information for the available cars.
+          rides->unreserveSeats(); //Reserves a ride.
       }
       else if (inputCommand==4)
       {
+          rides->complete(); //Completes a ride.
+      }
+      else if (inputCommand==5)
+      {
+          rides->showCars(); //Shows the information for the available cars.
+      }
+      else if (inputCommand==6)
+      {
           rides->showCarsToDestination(); //Shows the cars that drive to the destination.
       }
-      else if (inputCommand==5) //Shows the rides which can drive to the destination.
+      else if (inputCommand==7) //Shows the rides which can drive to the destination.
       {
           break; //Exits the loop.
       }
