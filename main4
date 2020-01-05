@@ -6,7 +6,7 @@ Date: January 5th, 2019
 Purpose: This program stores information for a ride sharing app using classes, inheritance, constructors, destructors, functions, exceptions and dynamic memory.
 */
 
-//SWAP TYPEOFRIDE TO BE AN INT, set global variables to be private members, make swapping car from Ride to Shared and vice versa a RideList method
+//set global variables to be private members
 
 #include <iostream>
 #include <cstring>
@@ -275,6 +275,8 @@ public:
     void complete(); //Method that completes a ride.
     void showCars(); //Method that prints the status of each car.
     void showCarsToDestination(); //Method that prints the cars that can go to an inputted destination.
+    void makeRegular(int carNumber); //Method that sets a car to be for a regular ride.
+    void makeShared(int carNumber); //Method that sets a car to be for a shared ride.
     
     friend class Ride; //Makes Ride a friend class, so it can access private members.
 };
@@ -395,27 +397,20 @@ void RideList::reserve() //Method that reserves a ride.
     }
     else
     {
-        string typeOfRide=""; //Initializes a local string variable holding the type of ride that is being created.
+        int typeOfRide=0; //Initializes a local string variable holding the type of ride that is being created.
         do
         {
-            cout<<"Enter the type of ride (regular or shared): ";
+            cout<<"Enter 1 for a regular ride, or 0 for a shared ride: ";
             cin>>typeOfRide; //Stores the input.
             cout<<"\n";
-            if (typeOfRide!="regular" && typeOfRide!="shared") //Checks if the inputted type of ride is invalid.
+            if (typeOfRide!=1 && typeOfRide!=0) //Checks if the inputted type of ride is invalid.
             {
                 cout<<"Invalid input. Please choose regular or shared for the type of ride.\n"; 
             }
-        } while (typeOfRide!="regular" && typeOfRide!="shared"); //Runs while the input is not for a valid type of ride.
-        if (typeOfRide=="shared") //Checks if the type of ride inputted is for a shared ride.
+        } while (typeOfRide!=1 && typeOfRide!=0); //Runs while the input is not for a valid type of ride.
+        if (typeOfRide==0) //Checks if the type of ride inputted is for a shared ride.
         {
-            int prevNumOfSeats=rides[carNumber]->numOfSeats; //Initializes a local variable to store the number of seats of the car who will have a shared ride.
-            bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
-            for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
-            {
-                prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
-            }
-            delete rides[carNumber]; //Deletes the old car's class from memory.
-            rides[carNumber]=new Shared(prevNumOfSeats,prevPossibleDestinations); //Creates a new object of the Shared class that has the same number of seats and possible destinations.
+            this->makeShared(carNumber); //Sets the car to be for a shared ride.
         }
         else //This checks if the type of ride inputted is for a regular ride.
         {
@@ -423,20 +418,12 @@ void RideList::reserve() //Method that reserves a ride.
         }
         rides[carNumber]->setCurDestination(); //Sets the destination the car will go to.
         rides[carNumber]->setInitialPickup(); //Sets the pickup location for the ride.
-        if (typeOfRide=="shared") //Checks if the type of ride inputted is for a shared ride.
+        if (typeOfRide==0) //Checks if the type of ride inputted is for a shared ride.
         {
             rides[carNumber]->reserveSeats(); //Reserves seats for the ride.
             if (rides[carNumber]->getNumOfReservedSeats()==0) //Checks if there are no reserved seats, which means that the ride will be cancelled.
             {
-                int prevNumOfSeats=rides[carNumber]->numOfSeats; //Initializes a local variable to store the number of seats of the car who will have a shared ride.
-                bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
-                for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
-                {
-                    prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
-                }
-                delete rides[carNumber]; //Deletes the old car's class from memory.
-                rides[carNumber]=new Ride(prevNumOfSeats,prevPossibleDestinations); //Creates a new object of the Shared class that has the same number of seats and possible destinations.
-                //Sets the car in that location to its initial state.
+                this->makeRegular(carNumber); //Resets the car to be for a regular ride again.
             }
         }
     }
@@ -484,15 +471,7 @@ void RideList::unreserveSeatsFromList()
     {
         if (!rides[carNumber]->unreserveSeats()) //Unreserves seats and checks if the ride has no seats left that were reserved.
         {
-            int prevNumOfSeats=rides[carNumber]->numOfSeats; //Initializes a local variable to store the number of seats of the car who will have a shared ride.
-            bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
-            for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
-            {
-                prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
-            }
-            delete rides[carNumber]; //Deletes the old car's class from memory.
-            rides[carNumber]=new Ride(prevNumOfSeats,prevPossibleDestinations); //Creates a new object of the Shared class that has the same number of seats and possible destinations.
-            //Sets the car in that location to its initial state.
+            this->makeRegular(carNumber); //Resets the car to be for a regular ride again.
         }
     }
 }
@@ -515,15 +494,7 @@ void RideList::complete() //Method that completes a ride.
     }
     else if (rides[carNumber]->getShared()) //Checks if the car is in a shared ride.
     {
-        int prevNumOfSeats=rides[carNumber]->numOfSeats; //Initializes a local variable to store the number of seats of the car who will have a shared ride.
-        bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
-        for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
-        {
-            prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
-        }
-        delete rides[carNumber]; //Deletes the old car's class from memory.
-        rides[carNumber]=new Ride(prevNumOfSeats,prevPossibleDestinations); //Creates a new object of the Shared class that has the same number of seats and possible destinations.
-        //Sets the car in that location to its initial state.
+        this->makeRegular(carNumber); //Resets the car to be for a regular ride again.
     }
     else
     {
@@ -596,6 +567,31 @@ void RideList::showCarsToDestination() //Method that shows the cars that can get
         }
     }
     cout<<"\n";
+}
+
+void RideList::makeRegular(int carNumber) //Method that sets a car to be for a regular ride.
+{
+    int prevNumOfSeats=rides[carNumber]->numOfSeats; //Initializes a local variable to store the number of seats of the car who will have a shared ride.
+    bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
+    for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
+    {
+        prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
+    }
+    delete rides[carNumber]; //Deletes the old car's class from memory.
+    rides[carNumber]=new Ride(prevNumOfSeats,prevPossibleDestinations); //Creates a new object of the Shared class that has the same number of seats and possible destinations.
+    //Sets the car in that location to its initial state.
+}
+
+void RideList::makeShared(int carNumber) //Method that sets a car to be for a shared ride.
+{
+    int prevNumOfSeats=rides[carNumber]->numOfSeats; //Initializes a local variable to store the number of seats of the car who will have a shared ride.
+    bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
+    for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
+    {
+        prevPossibleDestinations[i]=rides[carNumber]->possibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
+    }
+    delete rides[carNumber]; //Deletes the old car's class from memory.
+    rides[carNumber]=new Shared(prevNumOfSeats,prevPossibleDestinations); //Creates a new object of the Shared class that has the same number of seats and possible destinations.
 }
 
 int main()
