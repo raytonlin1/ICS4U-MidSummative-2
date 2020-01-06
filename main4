@@ -6,7 +6,7 @@ Date: January 5th, 2019
 Purpose: This program stores information for a ride sharing app using classes, inheritance, constructors, destructors, functions, exceptions and dynamic memory.
 */
 
-//set global variables to be private members
+//set global variables to be private members, add struct
 
 #include <iostream>
 #include <cstring>
