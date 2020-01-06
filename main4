@@ -269,7 +269,7 @@ public:
     void setDestinations(); //Method that sets the destinations.
     void setCars(); //Method that sets the parameters for the cars.
     void printDestinations(); //Method that prints each possible destination.
-    void reserve(); //Method that reserves a ride.
+    void reserveRide(); //Method that reserves a ride.
     void reserveSeatsFromList(); //Method that reserves seats for a shared ride.
     void unreserveSeatsFromList(); //Method that unreserves seats for a shared ride.
     void complete(); //Method that completes a ride.
@@ -379,7 +379,7 @@ void RideList::printDestinations() //Method that prints each possible destinatio
     }
 }
 
-void RideList::reserve() //Method that reserves a ride.
+void RideList::reserveRide() //Method that reserves a ride.
 {
     this->showCars(); //Shows the status of each car for the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
@@ -648,7 +648,7 @@ int main()
       cout << "\n";
       if (inputCommand==1)
       {
-          rides->reserve(); //Reserves a ride.
+          rides->reserveRide(); //Reserves a ride.
       }
       else if (inputCommand==2)
       {
