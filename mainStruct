@@ -17,6 +17,12 @@ int allNumOfDestinations; //Initializes a global integer variable storing the nu
 string negInputRides="Invalid input. The number of rides must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
 string negInputDestinations="Invalid input. The number of destinations must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
 
+struct carLocations
+{
+	string initialPickup; //String member that holds the initial pickup location of a ride.
+    int curDestination; //String member to hold the current destination for a ride.
+};
+
 void askForNumOfRides(int &inp) //Function that asks for the number of rides from the user.
 {
     cout << "Enter the maximum number of rides that can be stored. Car ID numbers will go from 1 to this number: ";
@@ -46,8 +52,7 @@ protected: //These are protected members that can only be accessed by the public
     bool shared; //Boolean member that stores whether the ride is shared.
     int numOfSeats; //Integer member that stores the number of seats in the car.
     bool *possibleDestinations; //Member that points to an array of bools representing the possible destinations it can go to.
-    string initialPickup; //String member that holds the initial pickup location of a ride.
-    int curDestination; //String member to hold the current destination for a ride.
+    carLocations locations; //Member that is a structure holding the relevant locations to the car.
 public:	//These are public methods.
     Ride() {}; //Empty constructor for when there are no parameters.
     Ride(int inpNumOfSeats) //Constructor for a ride.
@@ -61,8 +66,8 @@ public:	//These are public methods.
         {
             possibleDestinations[i]=false; //Sets each index in the array of possible destinations to false.
         } 
-        initialPickup=""; //Sets the initial pickup string to an empty string to represent that it hasn't been set for a ride.
-        curDestination=0; //Sets the current destination's index to 0 to represent that it hasn't been set for a ride.
+        locations.initialPickup=""; //Sets the initial pickup string to an empty string to represent that it hasn't been set for a ride.
+        locations.curDestination=0; //Sets the current destination's index to 0 to represent that it hasn't been set for a ride.
     }; 
     Ride(int inpNumOfSeats,bool* prevPosDes) //Constructor for a ride with possible destinations.
     {   
@@ -75,16 +80,16 @@ public:	//These are public methods.
         {
             possibleDestinations[i]=prevPosDes[i]; //Sets each index in the array of possible destinations to the array in the parameters.
         } 
-        initialPickup=""; //Sets the initial pickup string to an empty string to represent that it hasn't been set.
-        curDestination=0; //Sets the current destination's index to 0 to represent that it hasn't been set.
+        locations.initialPickup=""; //Sets the initial pickup string to an empty string to represent that it hasn't been set.
+        locations.curDestination=0; //Sets the current destination's index to 0 to represent that it hasn't been set.
     }; 
     ~Ride() {delete[] possibleDestinations;}; //Destructor for a ride.
     bool getActive() {return active;}; //Method that returns whether the ride is active.
     void switchActive() {active=!active;}; //Method that switches the value of the active member.
     bool getShared() {return shared;}; //Method that returns the ride is shared.
     int getNumOfSeats() {return numOfSeats;}; //Method that returns the number of seats.
-    string getInitialPickup() {return initialPickup;}; //Method that returns the initial pickup destination.
-    int getCurDestination() {return curDestination;}; //Method that returns the current destination of the ride.
+    string getInitialPickup() {return locations.initialPickup;}; //Method that returns the initial pickup destination.
+    int getCurDestination() {return locations.curDestination;}; //Method that returns the current destination of the ride.
     void printPossibleDestinations(); //Methods that print the possible destinations for a ride.
     void setCurDestination(); //Method that sets the destination of a ride.
     void setCurDestination(int inp); //Overloaded method that sets the destination of a ride given an input.
@@ -128,14 +133,14 @@ void Ride::setCurDestination() //Method that sets the destination of a ride.
         }
         else
         {
-            curDestination=inpDestination; //Sets the current destination to the input.
+            locations.curDestination=inpDestination; //Sets the current destination to the input.
         }
     }while (inpDestination>allNumOfDestinations||inpDestination<1||!possibleDestinations[inpDestination]); //Runs while the input is not for a valid destination.
 }
 
 void Ride::setCurDestination(int inp) //Overloaded method that sets the destination of a ride given an input.
 {
-    curDestination=inp; //Sets the current destination to the input given.
+    locations.curDestination=inp; //Sets the current destination to the input given.
 }
 
 void Ride::setInitialPickup() //Method that sets the initial pickup location.
@@ -157,14 +162,14 @@ void Ride::setInitialPickup() //Method that sets the initial pickup location.
         }
         else
         {
-            initialPickup=allDestinations[inpDestination]; //Sets the initial pickup location to the input.
+            locations.initialPickup=allDestinations[inpDestination]; //Sets the initial pickup location to the input.
         }
     }while (inpDestination>allNumOfDestinations||inpDestination<1||!possibleDestinations[inpDestination]); //Runs while the input is not for a valid location.
 }
 
 void Ride::setInitialPickup(string inp) //Overloaded method that sets the initial pickup location given an input.
 {
-    initialPickup=inp; //Sets the initial pickup location to the input.
+    locations.initialPickup=inp; //Sets the initial pickup location to the input.
 }
 
 class Shared: public Ride //Creates a class to represent a shared ride, as a subclass of the regular Ride class.
@@ -183,8 +188,8 @@ public: //These are public methods.
         {
             possibleDestinations[i]=false; //Sets each index to false.
         } 
-        initialPickup=""; //Sets the initial pickup location to an empty string, to indicate that it hasn't been set.
-        curDestination=0; //Sets the current destination's index to 0 to indicate that it hasn't been set for a ride.
+        locations.initialPickup=""; //Sets the initial pickup location to an empty string, to indicate that it hasn't been set.
+        locations.curDestination=0; //Sets the current destination's index to 0 to indicate that it hasn't been set for a ride.
         numOfReservedSeats=0; //Sets the current destination's index to 0 to indicate that it hasn't been set for a ride.
     };
     Shared(int inpNumOfSeats,bool* prevPosDes) //Constructor for a ride with possible destinations.
@@ -198,8 +203,8 @@ public: //These are public methods.
         {
             possibleDestinations[i]=prevPosDes[i]; //Sets each index to the array pointed to in the parameters.
         } 
-        initialPickup=""; //Sets the initial pickup location to an empty string, to indicate that it hasn't been set for a ride.
-        curDestination=0; //Sets the current destination's index to 0 to indicate that it hasn't been set for a ride.
+        locations.initialPickup=""; //Sets the initial pickup location to an empty string, to indicate that it hasn't been set for a ride.
+        locations.curDestination=0; //Sets the current destination's index to 0 to indicate that it hasn't been set for a ride.
     }; 
     ~Shared() {delete[] possibleDestinations;}; //Destructor for a shared ride.
     void reserveSeats(); //Method that reserves seats.
