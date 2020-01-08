@@ -177,34 +177,23 @@ class Shared: public Ride //Creates a class to represent a shared ride, as a sub
 private: //These are protected members that can only be accessed by the public methods in this class or any subclasses.
     int numOfReservedSeats; //Integer member storing the number of reserved seats.
 public: //These are public methods.
-    Shared(int inpNumOfSeats) //Constructor for a shared ride.
+    Shared(int inpNumOfSeats) : Ride(inpNumOfSeats) //Constructor for a shared ride.
     {
         active=true; 
         shared=true;
         //Sets the boolean members to true.
-        numOfSeats=inpNumOfSeats; //Sets the number of seats to the number in the parameter.
-        possibleDestinations=new bool[allNumOfDestinations+1]; //Points to a boolean array with a final index number equal to the number of destinations.
-        for(int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
-        {
-            possibleDestinations[i]=false; //Sets each index to false.
-        } 
         locations.initialPickup=""; //Sets the initial pickup location to an empty string, to indicate that it hasn't been set.
         locations.curDestination=0; //Sets the current destination's index to 0 to indicate that it hasn't been set for a ride.
-        numOfReservedSeats=0; //Sets the current destination's index to 0 to indicate that it hasn't been set for a ride.
+        numOfReservedSeats=0; //Sets the number of reserved seats to 0 to indicate that it hasn't been set for a ride.
     };
-    Shared(int inpNumOfSeats,bool* prevPosDes) //Constructor for a ride with possible destinations.
+    Shared(int inpNumOfSeats,bool* prevPosDes) : Ride(inpNumOfSeats,prevPosDes) //Constructor for a ride with possible destinations.
     {   
         active=true; 
         shared=true;
         //Sets the boolean members to true.
-        numOfSeats=inpNumOfSeats; //Sets the number of seats to the number in the parameters.
-        possibleDestinations=new bool[allNumOfDestinations+1]; //Points to a boolean array with a final index number equal to the number of destinations.
-        for(int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
-        {
-            possibleDestinations[i]=prevPosDes[i]; //Sets each index to the array pointed to in the parameters.
-        } 
         locations.initialPickup=""; //Sets the initial pickup location to an empty string, to indicate that it hasn't been set for a ride.
         locations.curDestination=0; //Sets the current destination's index to 0 to indicate that it hasn't been set for a ride.
+        numOfReservedSeats=0; //Sets the number of reserved seats to 0 to indicate that it hasn't been set for a ride.
     }; 
     ~Shared() {delete[] possibleDestinations;}; //Destructor for a shared ride.
     void reserveSeats(); //Method that reserves seats.
