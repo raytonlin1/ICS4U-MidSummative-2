@@ -20,7 +20,7 @@ string negInputDestinations="Invalid input. The number of destinations must be p
 struct carLocations
 {
     string initialPickup; //String member that holds the initial pickup location of a ride.
-    int curDestination; //String member to hold the current destination for a ride.
+    string curDestination; //String member to hold the current destination for a ride.
 };
 
 void askForNumOfRides(int &inp) //Function that asks for the number of rides from the user.
@@ -69,7 +69,7 @@ public:	//These are public methods.
             possibleDestinations[i]=false; //Sets each index in the array of possible destinations to false.
         } 
         locations.initialPickup=""; //Sets the initial pickup string to an empty string to represent that it hasn't been set for a ride.
-        locations.curDestination=0; //Sets the current destination's index to 0 to represent that it hasn't been set for a ride.
+        locations.curDestination=""; //Sets the current destination to an empty string to represent that it hasn't been set for a ride.
         hours=-1;
         minutes=-1;
         //Sets the time values to -1 to represent that it hasn't been set yet.
@@ -91,7 +91,7 @@ public:	//These are public methods.
     bool getShared() {return shared;}; //Method that returns the ride is shared.
     int getNumOfSeats() {return numOfSeats;}; //Method that returns the number of seats.
     string getInitialPickup() {return locations.initialPickup;}; //Method that returns the initial pickup destination.
-    int getCurDestination() {return locations.curDestination;}; //Method that returns the current destination of the ride.
+    string getCurDestination() {return locations.curDestination;}; //Method that returns the current destination of the ride.
     int getHours() {return hours;}; //Method that returns the hour value of the pickup time.
     int getMinutes() {return minutes;}; //Method that returns the minute value of the pickup time.
     void printPossibleDestinations(); //Methods that print the possible destinations for a ride.
@@ -139,14 +139,14 @@ void Ride::setCurDestination() //Method that sets the destination of a ride.
         }
         else
         {
-            locations.curDestination=inpDestination; //Sets the current destination to the input.
+            locations.curDestination=allDestinations[inpDestination]; //Sets the current destination to the input.
         }
     }while (inpDestination>allNumOfDestinations||inpDestination<1||!possibleDestinations[inpDestination]); //Runs while the input is not for a valid destination.
 }
 
 void Ride::setCurDestination(int inp) //Overloaded method that sets the destination of a ride given an input.
 {
-    locations.curDestination=inp; //Sets the current destination to the input given.
+    locations.curDestination=allDestinations[inp]; //Sets the current destination to the input given.
 }
 
 void Ride::setInitialPickup() //Method that sets the initial pickup location.
@@ -482,18 +482,18 @@ void RideList::reserveRide() //Method that reserves a ride.
     }
     else
     {
-        int typeOfRide=0; //Initializes a local string variable holding the type of ride that is being created.
+        int typeOfRide; //Initializes a local string variable holding the type of ride that is being created.
         do
         {
-            cout<<"Enter 1 for a regular ride, or 0 for a shared ride: ";
+            cout<<"Enter 1 for a regular ride, or 2 for a shared ride: ";
             cin>>typeOfRide; //Stores the input.
             cout<<"\n";
-            if (typeOfRide!=1 && typeOfRide!=0) //Checks if the inputted type of ride is invalid.
+            if (typeOfRide!=1 && typeOfRide!=2) //Checks if the inputted type of ride is invalid.
             {
                 cout<<"Invalid input. Please choose regular or shared for the type of ride.\n"; 
             }
-        } while (typeOfRide!=1 && typeOfRide!=0); //Runs while the input is not for a valid type of ride.
-        if (typeOfRide==0) //Checks if the type of ride inputted is for a shared ride.
+        } while (typeOfRide!=1 && typeOfRide!=2); //Runs while the input is not for a valid type of ride.
+        if (typeOfRide==2) //Checks if the type of ride inputted is for a shared ride.
         {
             this->makeShared(carNumber); //Sets the car to be for a shared ride.
         }
@@ -503,7 +503,7 @@ void RideList::reserveRide() //Method that reserves a ride.
         }
         rides[carNumber]->setCurDestination(); //Sets the destination the car will go to.
         rides[carNumber]->setInitialPickup(); //Sets the pickup location for the ride.
-        if (typeOfRide==0) //Checks if the type of ride inputted is for a shared ride.
+        if (typeOfRide==2) //Checks if the type of ride inputted is for a shared ride.
         {
             rides[carNumber]->reserveSeats(); //Reserves seats for the ride.
             if (rides[carNumber]->getNumOfReservedSeats()==0) //Checks if there are no reserved seats, which means that the ride will be cancelled.
@@ -615,7 +615,7 @@ void RideList::showCars() //Method that prints the status of each car.
             {
                 cout<<"\n";
             }
-            cout<<"Current Destination: "<<allDestinations[rides[i]->getCurDestination()]<<"\n"; //Prints the current destination of the ride.
+            cout<<"Current Destination: "<<rides[i]->getCurDestination()<<"\n"; //Prints the current destination of the ride.
             cout<<"Initial Pickup for Ride: "<<rides[i]->getInitialPickup()<<"\n"; //Prints the initial pickup for the ride.
             if (rides[i]->getMinutes()<10) //Checks if the minute value is a single digit number.
             {
