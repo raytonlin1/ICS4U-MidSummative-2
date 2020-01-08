@@ -19,7 +19,7 @@ string negInputDestinations="Invalid input. The number of destinations must be p
 
 struct carLocations
 {
-	string initialPickup; //String member that holds the initial pickup location of a ride.
+    string initialPickup; //String member that holds the initial pickup location of a ride.
     int curDestination; //String member to hold the current destination for a ride.
 };
 
