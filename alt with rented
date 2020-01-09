@@ -157,7 +157,7 @@ void Ride::setInitialPickup() //Method that sets the initial pickup location.
     int inpDestination; //Initializes a local integer variable to store the inputted destination.
     do
     {
-        cout<<"Enter the number of the pickup destination: ";
+        cout<<"Enter the number of the destination that will be the pickup location: ";
         cin>>inpDestination; //Stores the input.
         cout<<"\n";
         if (inpDestination>allNumOfDestinations||inpDestination<1) //Checks if the input is within the boundaries.
@@ -374,7 +374,7 @@ void Rented::setFollowingRideInfo() //Method that sets the locations of the ride
         this->printPossibleDestinations(); //Prints the possible destinations of the ride to the reader where the car can pick up the customer.
         do
         {
-            cout<<"Enter the number of the pickup destination: ";
+            cout<<"Enter the number of the destination that will be your pickup location: ";
             cin>>inpPickupLocation; //Stores the input.
             cout<<"\n";
             if (inpPickupLocation>allNumOfDestinations||inpPickupLocation<1) //Checks if the input is within the boundaries.
@@ -430,6 +430,14 @@ void Rented::completeCurRide() //Method that completes the current ride for a re
         followingRideInfo[i].initialPickup=followingRideInfo[i+1].initialPickup;
         followingRideInfo[i].hours=followingRideInfo[i+1].hours;
         followingRideInfo[i].minutes=followingRideInfo[i+1].minutes;
+    }
+    if (followingRideInfo[numOfFollowingRides].hours!=-1) //Checks if the last index's values haven't been reset through the hours value.
+    {
+        followingRideInfo[numOfFollowingRides].rideDestination="";
+        followingRideInfo[numOfFollowingRides].initialPickup="";
+        followingRideInfo[numOfFollowingRides].hours=-1;
+        followingRideInfo[numOfFollowingRides].minutes=-1;
+        //The above lines reset the values for the last index.
     }
     numOfFollowingRides--; //Decrements the number of following rides by 1, as a ride has been completed.
 }
@@ -784,6 +792,11 @@ void RideList::completeCurRideFromList() //Method that completes the current rid
     else
     {
         rides[carNumber]->completeCurRide(); //Completes the current ride.
+        if (rides[carNumber]->getNumOfFollowingRides()==-1 && rides[carNumber]->getHours()==-1) //Checks if there are no following rides and no current ride.
+        {
+            cout<<"This car has no remaining rides for its rented ride, so its member values will be reset and it will become used for a regular ride again.\n";
+            this->makeRegular(carNumber); //Resets the car to be for a regular ride again.
+        }
     }
 }
 
@@ -828,13 +841,13 @@ void RideList::showCars() //Method that prints the status of each car.
                     cout<<"\n";
                     cout<<"The ride destination for Ride #"<<j+1<<": "<<rides[i]->followingRideInfo[j].rideDestination<<"\n"; //Prints the destination for the ride.
                     cout<<"The initial pickup location for Ride #"<<j+1<<": "<<rides[i]->followingRideInfo[j].initialPickup<<"\n"; //Prints the destination for the ride.
-                    if (rides[i]->getMinutes()<10) //Checks if the minute value is a single digit number.
+                    if (rides[i]->followingRideInfo[j].minutes<10) //Checks if the minute value is a single digit number.
                     {
-                        cout<<"The pickup time for Ride #"<<j+1<<" is "<<rides[i]->getHours()<<":0"<<rides[i]->getMinutes()<<".\n"; //Prints the pickup time for the ride.
+                        cout<<"The pickup time for Ride #"<<j+1<<" is "<<rides[i]->followingRideInfo[j].hours<<":0"<<rides[i]->followingRideInfo[j].minutes<<".\n"; //Prints the pickup time for the ride.
                     }
                     else
                     {
-                        cout<<"The pickup time for Ride #"<<j+1<<" is "<<rides[i]->getHours()<<":"<<rides[i]->getMinutes()<<".\n"; //Prints the pickup time for the ride.
+                        cout<<"The pickup time for Ride #"<<j+1<<" is "<<rides[i]->followingRideInfo[j].hours<<":"<<rides[i]->followingRideInfo[j].minutes<<".\n"; //Prints the pickup time for the ride.
                     }
                 }
                 
