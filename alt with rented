@@ -93,6 +93,7 @@ public:	//These are public methods.
     int getHours() {return curRideInfo.hours;}; //Method that returns the hour value of the pickup time.
     int getMinutes() {return curRideInfo.minutes;}; //Method that returns the minute value of the pickup time.
     void printPossibleDestinations(); //Methods that print the possible destinations for a ride.
+    void setNumOfSeats(); //Method that sets the number of seats for a ride.
     void setRideDestination(); //Method that sets the destination of a ride.
     void setRideDestination(string inp); //Overloaded method that sets the destination of a ride given an input.
     void setInitialPickup(); //Method that sets the initial pickup location.
@@ -120,6 +121,25 @@ void Ride::printPossibleDestinations() //Methods that print the possible destina
             cout<<i<<". "<<allDestinations[i]<<"\n"; //If so, it prints the destination.
         }
     }
+}
+
+void Ride::setNumOfSeats() //Method that sets the number of seats for the car.
+{
+    int inpSeats; //Initializes a local integer variable to store the number of seats.
+    do
+    {
+        cout<<"Enter the number of seats: ";
+        cin>>inpSeats; //Stores the input.
+        cout<<"\n";
+        if (inpSeats<1) //Checks if the inputted number of seats is negative.
+        {
+            cout<<"Invalid input. The number of seats that a car has must be positive.\n";
+        }
+        else //This block of code runs if the input is valid.
+        {
+            numOfSeats=inpSeats; //Sets the number of seats to the inputted number.
+        }
+    }while(inpSeats<1); //Runs while it has been indicated that the function has not finished.
 }
 
 void Ride::setRideDestination() //Method that sets the destination of a ride.
@@ -450,11 +470,12 @@ private:
 public:
     RideList(int inpNumOfRides); //Constructor for the class.
     ~RideList(); //Destructor for the class.
-    void chooseType(); //Method that asks the user to input the type of command they want until they want to quit.
+    void chooseCommand(); //Method that asks the user to input the command that they want until they want to quit.
     void setDestinations(); //Method that sets the destinations.
     void setCars(); //Method that sets the parameters for the cars.
     void printDestinations(); //Method that prints each possible destination.
     void reserveRide(); //Method that reserves a ride.
+    void setNumOfSeatsFromList(); //Method that sets the number of seats that a car has.
     void reserveSeatsFromList(); //Method that reserves seats for a shared ride.
     void unreserveSeatsFromList(); //Method that unreserves seats for a shared ride.
     void complete(); //Method that completes a ride.
@@ -482,21 +503,22 @@ RideList::~RideList() //Destructor for the class.
     //Deletes the dynamic memory allocated to the array.
 }
 
-void RideList::chooseType() //Method that asks the user to input the type of command they want until they want to quit.
+void RideList::chooseCommand() //Method that asks the user to input the command that they want until they want to quit.
 {
     int inputCommand=0;		//Initializes an integer variable that stores inputted commands.
-    while (inputCommand != 7) //Runs while the command isn't to quit.
+    while (inputCommand != 9) //Runs while the command isn't to quit.
     {
       cout<<"\n";
       cout<<"The following commands can be entered.\n";
       cout<<"1. This command makes a reservation for a ride. You will be shown the available cars for the ride. You will be asked for the type of ride, destination and the pickup location.\n";
-      cout<<"2. This command reserves seats for an existing shared ride.\n";
-      cout<<"3. This command unreserves seats for an existing shared ride.\n";
-      cout<<"4. This command completes the current ride for a car in a rented ride.\n";
-      cout<<"5. This command completes the ride for a car, setting the information back to its initial state.\n";
-      cout<<"6. This command shows the information for the available cars.\n";
-      cout<<"7. This command shows the cars which can drive to the destination.\n";
-      cout<<"8. The quit command exits the program.\n";
+      cout<<"2. This command sets the number of seats that a car has. It cannot change the number of seats for a car in an active ride.\n";
+      cout<<"3. This command reserves seats for an existing shared ride.\n";
+      cout<<"4. This command unreserves seats for an existing shared ride.\n";
+      cout<<"5. This command completes the current ride for a car in a rented ride.\n";
+      cout<<"6. This command completes the ride for a car, setting the information back to its initial state.\n";
+      cout<<"7. This command shows the information for the available cars.\n";
+      cout<<"8. This command shows the cars which can drive to the destination.\n";
+      cout<<"9. The quit command exits the program.\n";
       cout << "Enter your command, as a number: ";
 	  cin >> inputCommand; //Stores the input.
       cout << "\n";
@@ -506,29 +528,33 @@ void RideList::chooseType() //Method that asks the user to input the type of com
       }
       else if (inputCommand==2)
       {
-          this->reserveSeatsFromList(); //Reserves a ride.
+          this->setNumOfSeatsFromList(); //Reserves a ride.
       }
       else if (inputCommand==3)
       {
-          this->unreserveSeatsFromList(); //Reserves a ride.
+          this->reserveSeatsFromList(); //Reserves a ride.
       }
       else if (inputCommand==4)
       {
-          this->completeCurRideFromList(); //Completes a ride.
+          this->unreserveSeatsFromList(); //Reserves a ride.
       }
       else if (inputCommand==5)
       {
-          this->complete(); //Completes a ride.
+          this->completeCurRideFromList(); //Completes a ride.
       }
       else if (inputCommand==6)
       {
-          this->showCars(); //Shows the information for the available cars.
+          this->complete(); //Completes a ride.
       }
       else if (inputCommand==7)
       {
+          this->showCars(); //Shows the information for the available cars.
+      }
+      else if (inputCommand==8)
+      {
           this->showCarsToDestination(); //Shows the cars that drive to the destination.
       }
-      else if (inputCommand==8) //Shows the rides which can drive to the destination.
+      else if (inputCommand==9) //Shows the rides which can drive to the destination.
       {
           break; //Exits the loop.
       }
@@ -694,6 +720,28 @@ void RideList::reserveRide() //Method that reserves a ride.
         {
             rides[carNumber]->setPickupTime(); //Sets the pickup time for the ride.
         }
+    }
+}
+
+void RideList::setNumOfSeatsFromList() //Method that sets the number of seats that a car has.
+{
+    this->showCars(); //Shows the status of each car to the user.
+    int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
+    cout<<"Choose the number of the ride that you would like to take: ";
+    cin>>carNumber; //Stores the input.
+    cout<<"\n";
+    
+    if (carNumber>totalNumOfRides||carNumber<1) //Checks if the number for the car is valid.
+    {
+        cout<<"This is not a valid number for a car. A valid car number is between 1 and "<<totalNumOfRides<<".\n";
+    }
+    else if (!rides[carNumber]->getActive()) //Checks if the car is in an active ride.
+    {
+        cout<<"This car is currently in an active ride and can't have its number of seats changed.\n";
+    }
+    else
+    {
+        rides[carNumber]->setNumOfSeats(); //Reserves seats.
     }
 }
 
@@ -979,7 +1027,7 @@ int main()
   rides->setDestinations(); //Asks the user to set all the destinations the rides can go to.
   rides->setCars(); //Asks the user to set the parameters for all the cars in the list.
   
-  rides->chooseType(); //Asks the user to input a command until they quit.
+  rides->chooseCommand(); //Asks the user to input a command until they quit.
   delete rides; //Deletes rides as it is dynamic memory.
   return 0;
 }
