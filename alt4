@@ -74,10 +74,6 @@ public:	//These are public methods.
     }; 
     Ride(int inpNumOfSeats,bool* prevPosDes) : Ride(inpNumOfSeats) //Constructor for a ride with the previous class's possible destinations.
     {   
-        active=false; 
-        shared=false;
-        //Sets the boolean members to false.
-        numOfSeats=inpNumOfSeats; //Sets the number of seats to the number in the parameter.
         for(int i=0;i<=allNumOfDestinations;i++) //Loops through each destination.
         {
             possibleDestinations[i]=prevPosDes[i]; //Sets each index in the array of possible destinations to the array in the parameters.
