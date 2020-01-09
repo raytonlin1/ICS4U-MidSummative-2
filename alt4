@@ -6,21 +6,21 @@ Date: January 5th, 2019
 Purpose: This program stores information for a ride sharing app using classes, inheritance, constructors, destructors, functions, exceptions and dynamic memory.
 */
 
-//set global variables to be private members, add struct
-
 #include <iostream>
 #include <cstring>
 using namespace std;
 string *allDestinations; //Initializes a string pointer globally to point to an array of strings representing the possible destinations.
 int allNumOfDestinations; //Initializes a global integer variable storing the number of destinations.
 
-string negInputRides="Invalid input. The number of rides must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
-string negInputDestinations="Invalid input. The number of destinations must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
+string NegInputRides="Invalid input. The number of rides must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
+string NegInputDestinations="Invalid input. The number of destinations must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
 
-struct carLocations
+struct rideInfo //Structure holding the info for an active ride.
 {
     string initialPickup; //String member that holds the initial pickup location of a ride.
     string curDestination; //String member to hold the current destination for a ride.
+    int hours; //Member that sets the hours value of the time when the car will arrive at the pickup destination.
+    int minutes; //Member that stores the minute value of the time when the car will arrive at the pickup destination.
 };
 
 void askForNumOfRides(int &inp) //Function that asks for the number of rides from the user.
@@ -30,7 +30,7 @@ void askForNumOfRides(int &inp) //Function that asks for the number of rides fro
     cout << "\n"; //Asks for an inputted number for the number of rides.
     if (inp<1) //Checks if the input is valid.
     {
-        throw negInputRides; //Throws a string indicating an invalid negative input for the rides.
+        throw NegInputRides; //Throws a string indicating an invalid negative input for the rides.
     } 
 }
 
@@ -41,7 +41,7 @@ void askForNumOfDestinations(int &inp) //Function that asks for the number of de
     cout << "\n"; //Asks for an inputted number for the number of destinations.
     if (inp<1) //Checks if the input is valid.
     {
-        throw negInputDestinations; //Throws a string indicating an invalid negative input for the destinations.
+        throw NegInputDestinations; //Throws a string indicating an invalid negative input for the destinations.
     }
 }
 
@@ -52,9 +52,7 @@ protected: //These are protected members that can only be accessed by the public
     bool shared; //Boolean member that stores whether the ride is shared.
     int numOfSeats; //Integer member that stores the number of seats in the car.
     bool *possibleDestinations; //Member that points to an array of bools representing the possible destinations it can go to.
-    carLocations locations; //Member that is a structure holding the relevant locations to the car.
-    int hours; //Member that sets the hours value of the time when the car will arrive at the pickup destination.
-    int minutes; //Member that stores the minute value of the time when the car will arrive at the pickup destination.
+    rideInfo curRideInfo; //Member that is a structure holding the relevant information for an active ride to the car.
 public:	//These are public methods.
     Ride() {}; //Empty constructor for when there are no parameters.
     Ride(int inpNumOfSeats) //Constructor for a ride.
@@ -68,13 +66,13 @@ public:	//These are public methods.
         {
             possibleDestinations[i]=false; //Sets each index in the array of possible destinations to false.
         } 
-        locations.initialPickup=""; //Sets the initial pickup string to an empty string to represent that it hasn't been set for a ride.
-        locations.curDestination=""; //Sets the current destination to an empty string to represent that it hasn't been set for a ride.
-        hours=-1;
-        minutes=-1;
+        curRideInfo.initialPickup=""; //Sets the initial pickup string to an empty string to represent that it hasn't been set for a ride.
+        curRideInfo.curDestination=""; //Sets the current destination to an empty string to represent that it hasn't been set for a ride.
+        curRideInfo.hours=-1;
+        curRideInfo.minutes=-1;
         //Sets the time values to -1 to represent that it hasn't been set yet.
     }; 
-    Ride(int inpNumOfSeats,bool* prevPosDes) : Ride(inpNumOfSeats) //Constructor for a ride with possible destinations.
+    Ride(int inpNumOfSeats,bool* prevPosDes) : Ride(inpNumOfSeats) //Constructor for a ride with the previous class's possible destinations.
     {   
         active=false; 
         shared=false;
@@ -90,10 +88,10 @@ public:	//These are public methods.
     void switchActive() {active=!active;}; //Method that switches the value of the active member.
     bool getShared() {return shared;}; //Method that returns the ride is shared.
     int getNumOfSeats() {return numOfSeats;}; //Method that returns the number of seats.
-    string getInitialPickup() {return locations.initialPickup;}; //Method that returns the initial pickup destination.
-    string getCurDestination() {return locations.curDestination;}; //Method that returns the current destination of the ride.
-    int getHours() {return hours;}; //Method that returns the hour value of the pickup time.
-    int getMinutes() {return minutes;}; //Method that returns the minute value of the pickup time.
+    string getInitialPickup() {return curRideInfo.initialPickup;}; //Method that returns the initial pickup destination.
+    string getCurDestination() {return curRideInfo.curDestination;}; //Method that returns the current destination of the ride.
+    int getHours() {return curRideInfo.hours;}; //Method that returns the hour value of the pickup time.
+    int getMinutes() {return curRideInfo.minutes;}; //Method that returns the minute value of the pickup time.
     void printPossibleDestinations(); //Methods that print the possible destinations for a ride.
     void setCurDestination(); //Method that sets the destination of a ride.
     void setCurDestination(int inp); //Overloaded method that sets the destination of a ride given an input.
@@ -139,14 +137,14 @@ void Ride::setCurDestination() //Method that sets the destination of a ride.
         }
         else
         {
-            locations.curDestination=allDestinations[inpDestination]; //Sets the current destination to the input.
+            curRideInfo.curDestination=allDestinations[inpDestination]; //Sets the current destination to the input.
         }
     }while (inpDestination>allNumOfDestinations||inpDestination<1||!possibleDestinations[inpDestination]); //Runs while the input is not for a valid destination.
 }
 
 void Ride::setCurDestination(int inp) //Overloaded method that sets the destination of a ride given an input.
 {
-    locations.curDestination=allDestinations[inp]; //Sets the current destination to the input given.
+    curRideInfo.curDestination=allDestinations[inp]; //Sets the current destination to the input given.
 }
 
 void Ride::setInitialPickup() //Method that sets the initial pickup location.
@@ -168,14 +166,14 @@ void Ride::setInitialPickup() //Method that sets the initial pickup location.
         }
         else
         {
-            locations.initialPickup=allDestinations[inpDestination]; //Sets the initial pickup location to the input.
+            curRideInfo.initialPickup=allDestinations[inpDestination]; //Sets the initial pickup location to the input.
         }
     }while (inpDestination>allNumOfDestinations||inpDestination<1||!possibleDestinations[inpDestination]); //Runs while the input is not for a valid location.
 }
 
 void Ride::setInitialPickup(string inp) //Overloaded method that sets the initial pickup location given an input.
 {
-    locations.initialPickup=inp; //Sets the initial pickup location to the input.
+    curRideInfo.initialPickup=inp; //Sets the initial pickup location to the input.
 }
 
 void Ride::setPickupTime() //Method that sets the time when the ride will arrive at the pickup location.
@@ -202,15 +200,15 @@ void Ride::setPickupTime() //Method that sets the time when the ride will arrive
             cout<<"Invalid input. The minute value must be between 0 and 59.\n";
         }
     }while(inpMinutes>59||inpMinutes<0);
-    hours=inpHours;
-    minutes=inpMinutes;
+    curRideInfo.hours=inpHours;
+    curRideInfo.minutes=inpMinutes;
     //Stores the inputted time in the member variables.
 }
 
 void Ride::setPickupTime(int inpHours,int inpMinutes) //Overloaded method that sets the time when the ride will arrive at the pickup location given inputted parameters.
 {
-    hours=inpHours;
-    minutes=inpMinutes;
+    curRideInfo.hours=inpHours;
+    curRideInfo.minutes=inpMinutes;
     //Sets the members to the inputted parameters.
 }
 
@@ -226,7 +224,7 @@ public: //These are public methods.
         //Sets the boolean members to true.
         numOfReservedSeats=0; //Sets the number of reserved seats to 0 to indicate that it hasn't been set for a ride.
     };
-    Shared(int inpNumOfSeats,bool* prevPosDes) : Ride(inpNumOfSeats,prevPosDes) //Constructor for a ride with possible destinations.
+    Shared(int inpNumOfSeats,bool* prevPosDes) : Ride(inpNumOfSeats,prevPosDes) //Constructor for a ride with the previous class's possible destinations.
     {   
         active=true; 
         shared=true;
