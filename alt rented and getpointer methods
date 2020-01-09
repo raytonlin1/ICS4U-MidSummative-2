@@ -732,7 +732,7 @@ void RideList::setNumOfSeatsFromList() //Method that sets the number of seats th
 {
     this->showCars(); //Shows the status of each car to the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the ride that you would like to take: ";
+    cout<<"Choose the number of the ride that you would like to set the number of seats for: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
     
