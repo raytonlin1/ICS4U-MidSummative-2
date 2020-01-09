@@ -492,8 +492,8 @@ void RideList::chooseType() //Method that asks the user to input the type of com
       cout<<"1. This command makes a reservation for a ride. You will be shown the available cars for the ride. You will be asked for the type of ride, destination and the pickup location.\n";
       cout<<"2. This command reserves seats for an existing shared ride.\n";
       cout<<"3. This command unreserves seats for an existing shared ride.\n";
-      cout<<"4. This command completes the ride for a car, setting the information back to its initial state.\n";
-      cout<<"5. This command completes the current ride for a car in a rented ride.\n";
+      cout<<"4. This command completes the current ride for a car in a rented ride.\n";
+      cout<<"5. This command completes the ride for a car, setting the information back to its initial state.\n";
       cout<<"6. This command shows the information for the available cars.\n";
       cout<<"7. This command shows the cars which can drive to the destination.\n";
       cout<<"8. The quit command exits the program.\n";
@@ -514,11 +514,11 @@ void RideList::chooseType() //Method that asks the user to input the type of com
       }
       else if (inputCommand==4)
       {
-          this->complete(); //Completes a ride.
+          this->completeCurRideFromList(); //Completes a ride.
       }
       else if (inputCommand==5)
       {
-          this->completeCurRideFromList(); //Completes a ride.
+          this->complete(); //Completes a ride.
       }
       else if (inputCommand==6)
       {
