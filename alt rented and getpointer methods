@@ -740,7 +740,7 @@ void RideList::setNumOfSeatsFromList() //Method that sets the number of seats th
     {
         cout<<"This is not a valid number for a car. A valid car number is between 1 and "<<totalNumOfRides<<".\n";
     }
-    else if (!rides[carNumber]->getActive()) //Checks if the car is in an active ride.
+    else if (rides[carNumber]->getActive()) //Checks if the car is in an active ride.
     {
         cout<<"This car is currently in an active ride and can't have its number of seats changed.\n";
     }
