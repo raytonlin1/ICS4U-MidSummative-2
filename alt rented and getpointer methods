@@ -25,7 +25,7 @@ struct rideInfo //Structure holding the info for an active ride.
 
 void askForNumOfRides(int &inp) //Function that asks for the number of rides from the user.
 {
-    cout << "Enter the maximum number of rides that can be stored. Car ID numbers will go from 1 to this number: ";
+    cout << "Enter the number of rides that will be stored. Car ID numbers will go from 1 to this number: ";
     cin >> inp; //Stores the input.
     cout << "\n"; //Asks for an inputted number for the number of rides.
     if (inp<1) //Checks if the input is valid.
