@@ -19,7 +19,7 @@ struct rideInfo //Structure holding the info for an active ride.
 {
     string rideDestination; //String member to hold the destination for a ride.
     string initialPickup; //String member that holds the initial pickup location of a ride.
-    int hours; //Member that sets the hours value of the time when the car will arrive at the pickup destination.
+    int hours; //Member that sets the hours value of the time when the car will arrive at the pickup destination. The value of this is also used in this code to check for if there is a current ride, as if it is set to -1 then there is no current ride.
     int minutes; //Member that stores the minute value of the time when the car will arrive at the pickup destination.
 };
 
