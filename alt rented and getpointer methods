@@ -36,6 +36,7 @@ void askForNumOfRides(int &inp) //Function that asks for the number of rides fro
 
 void askForNumOfDestinations(int &inp) //Function that asks for the number of destinations from the user.
 {
+    cout<<"Each destination in this app will also be a pickup location.\n";
     cout << "Enter the number of destinations: ";
     cin >> inp; //Stores the input.
     cout << "\n"; //Asks for an inputted number for the number of destinations.
@@ -114,7 +115,7 @@ public:	//These are public methods.
 
 void Ride::printPossibleDestinations() //Methods that print the possible destinations for a ride.
 {
-    cout<<"The following destinations are the destinations that the car can go to.\n";
+    cout<<"The following locations are the destinations or pickup locations that the car can go to.\n";
     for (int i=1;i<=allNumOfDestinations;i++) //Loops through each destination.
     {
         if (possibleDestinations[i]) //Checks if the car can get to the destination.
