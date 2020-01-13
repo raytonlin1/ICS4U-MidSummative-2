@@ -1121,7 +1121,7 @@ void RideList::deleteCar() //Method that deletes a car from the array.
     {
         cout<<"This is not a valid number for a car. A valid car number is between 1 and "<<totalNumOfRides<<".\n";
     }
-    else if (rides[carNumber]->getExists()) //Checks if the car exists.
+    else if (!rides[carNumber]->getExists()) //Checks if the car exists.
     {
         cout<<"The car with this number does not exist yet.\n";
     }
