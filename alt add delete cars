@@ -947,12 +947,14 @@ void RideList::completeCurRideFromList() //Method that completes the current rid
 
 void RideList::showCars() //Method that prints the status of each car.
 {
+    bool carShown=false; //Initializes a local boolean variable that stores whether a car was shown.
     for (int i=1;i<=totalNumOfRides;i++) //Loops through each car.
     {
         if (!rides[i]->getExists()) //Checks if the car doesn't exist.
         {
             continue; //Moves on to the next car in the array.
         }
+        carShown=true; //Stores that a car was shown.
         cout<<i<<". ";
         if (rides[i]->getActive())  //Checks if the car is in a ride.
         {
@@ -1017,6 +1019,10 @@ void RideList::showCars() //Method that prints the status of each car.
         rides[i]->printPossibleDestinations(); //Prints the possible destinations for the car.
         cout<<"\n";
     }
+    if (!carShown) //Checks if no car was shown.
+    {
+        cout<<"There are no cars in this list. If you are shown this when being asked to input a car number, input any number to continue.\n";
+    }
 }
 
 void RideList::showCarsToDestination() //Method that shows the cars that can get to a destination.
@@ -1064,7 +1070,7 @@ void RideList::addCar() //Method that adds a car to the array.
 {
     this->showCars(); //Shows the status of the cars for the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the car whose ride has completed: ";
+    cout<<"Choose the number of the car who will be added: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
     
@@ -1103,7 +1109,7 @@ void RideList::deleteCar() //Method that deletes a car from the array.
 {
     this->showCars(); //Shows the status of the cars for the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the car whose ride has completed: ";
+    cout<<"Choose the number of the car who will be deleted: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
     
@@ -1218,3 +1224,17 @@ int main()
   delete rides; //Deletes rides as it is dynamic memory.
   return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
