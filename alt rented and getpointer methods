@@ -1071,8 +1071,8 @@ int main()
   RideList* rides; //Initializes a pointer to a RideList.
   rides=new RideList(inpNumOfRides); //Creates an object holding a list of rides that the pointer points to.
   rides->setDestinations(); //Asks the user to set all the destinations the rides can go to.
-  
   rides->setCars(); //Asks the user to set the parameters for all the cars in the list.
+  
   rides->chooseCommand(); //Asks the user to input a command until they quit.
   
   delete rides; //Deletes rides as it is dynamic memory.
