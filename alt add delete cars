@@ -1063,6 +1063,10 @@ void RideList::showCarsToDestination() //Method that shows the cars that can get
             }
         }
     }
+    if (!firstCarPrinted) //Checks if no car was printed.
+    {
+        cout<<" (There are no cars that can get to the destination)\n";
+    }
     cout<<"\n";
 }
 
