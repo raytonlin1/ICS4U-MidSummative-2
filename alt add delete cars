@@ -56,7 +56,6 @@ protected: //These are protected members that can only be accessed by the public
     int numOfSeats; //Integer member that stores the number of seats in the car.
     bool *possibleDestinations; //Member that points to an array of bools representing the possible destinations it can go to.
     rideInfo curRideInfo; //Member that is a structure holding the relevant information for an active ride to the car.
-    rideInfo *followingRideInfo; //Member that points to an array representing the locations after the first one for the duration of the ride. This array is only accessed for rented rides.
 public:	//These are public methods.
     Ride() //Empty constructor for when there are no parameters.
     {
@@ -116,7 +115,11 @@ public:	//These are public methods.
     virtual int getNumOfReservedSeats(){return 0;}; //Virtual method that returns the number of reserved seats. It is only used in shared rides.
     virtual void setFollowingRideInfo(){}; //Method that sets the locations of the rides following the first one. It is only used in the subclass for rented rides.
     virtual int getNumOfFollowingRides(){return 0;}; //Method that gets the number of following sets of locations after the first one. It is only used in the subclass for rented rides.
-    virtual rideInfo* getFollowingRideInfo(){return followingRideInfo;}; //Method that returns a pointer to the array for following destinations. It is only used in the subclass for rented rides.
+    virtual rideInfo* getFollowingRideInfo() //Method that returns a pointer to the array for following destinations. It is only used in the subclass for rented rides.
+    {
+        rideInfo* ptr=&curRideInfo; //Initializes a pointer to curRideInfo as a debugging mechanism, this method should never be called on the parent class.
+        return ptr; //Returns the pointer.
+    };
     virtual void completeCurRide(){}; //Method that completes the current ride. It is only used in the subclass for rented rides.
     //The return values for the virtual functions are never used in the program, they are only used for debugging.
 };
@@ -351,6 +354,7 @@ class Rented: public Ride //Creates a class to represent a rented ride, as a sub
 {
 private: //These are private members that can only be accessed by the public methods in this class or any friend classes.
     int numOfFollowingRides; //Integer member that stores the number of following rides.
+    rideInfo* followingRideInfo; //Member that points to an array representing the locations after the first one for the duration of the ride. 
 public: //These are public methods.
     Rented(int inpNumOfSeats) : Ride(inpNumOfSeats) //Constructor for a rented ride.
     {
@@ -375,6 +379,10 @@ public: //These are public methods.
     }; 
     void setFollowingRideInfo(); //Method that sets the info of the rides following the first one.
     int getNumOfFollowingRides() {return numOfFollowingRides;}; //Method that gets the number of following sets of info for the rides after the first one.
+    rideInfo* getFollowingRideInfo() //Method that returns a pointer to the array for following destinations. 
+    {
+        return followingRideInfo;
+    };
     void completeCurRide(); //Method that completes the current ride.
 };
 
@@ -974,29 +982,24 @@ void RideList::showCars() //Method that prints the status of each car.
                 cout<<" (Rented)\n";
                 cout<<"The ride destination for Ride #1: "<<rides[i]->getRideDestination()<<"\n"; //Prints the ride destination.
                 cout<<"The initial pickup location for Ride #1: "<<rides[i]->getInitialPickup()<<"\n"; //Prints the initial pickup for the ride.
+                cout<<"The pickup time for Ride #1 is "<<rides[i]->getHours()<<":";
                 if (rides[i]->getMinutes()<10) //Checks if the minute value is a single digit number.
                 {
-                    cout<<"The pickup time for Ride #1 is "<<rides[i]->getHours()<<":0"<<rides[i]->getMinutes()<<".\n"; //Prints the pickup time for the ride.
+                    cout<<"0";
                 }
-                else
-                {
-                    cout<<"The pickup time for Ride #1 is "<<rides[i]->getHours()<<":"<<rides[i]->getMinutes()<<".\n"; //Prints the pickup time for the ride.
-                }
+                cout<<rides[i]->getMinutes()<<".\n";
                 for (int j=1;j<=rides[i]->getNumOfFollowingRides();j++)
                 {
                     cout<<"\n";
                     cout<<"The ride destination for Ride #"<<j+1<<": "<<thisCarFollowingRideInfo[j].rideDestination<<"\n"; //Prints the destination for the ride.
                     cout<<"The initial pickup location for Ride #"<<j+1<<": "<<thisCarFollowingRideInfo[j].initialPickup<<"\n"; //Prints the destination for the ride.
+                    cout<<"The pickup time for Ride #"<<j+1<<" is "<<thisCarFollowingRideInfo[j].hours<<":";
                     if (thisCarFollowingRideInfo[j].minutes<10) //Checks if the minute value is a single digit number.
                     {
-                        cout<<"The pickup time for Ride #"<<j+1<<" is "<<thisCarFollowingRideInfo[j].hours<<":0"<<thisCarFollowingRideInfo[j].minutes<<".\n"; //Prints the pickup time for the ride.
+                        cout<<"0";
                     }
-                    else
-                    {
-                        cout<<"The pickup time for Ride #"<<j+1<<" is "<<thisCarFollowingRideInfo[j].hours<<":"<<thisCarFollowingRideInfo[j].minutes<<".\n"; //Prints the pickup time for the ride.
-                    }
+                    cout<<thisCarFollowingRideInfo[j].minutes<<".\n"; //Prints the pickup time for the ride.
                 }
-                
             }
             else
             {
@@ -1114,6 +1117,10 @@ void RideList::deleteCar() //Method that deletes a car from the array.
     if (carNumber>totalNumOfRides||carNumber<1) //Checks if the number for the car is valid.
     {
         cout<<"This is not a valid number for a car. A valid car number is between 1 and "<<totalNumOfRides<<".\n";
+    }
+    else if (rides[carNumber]->getActive()) //Checks if the car is in an active ride.
+    {
+        cout<<"The car with this number is currently in an active ride and cannot be deleted at the moment.\n";
     }
     else if (!rides[carNumber]->getExists()) //Checks if the car exists.
     {
