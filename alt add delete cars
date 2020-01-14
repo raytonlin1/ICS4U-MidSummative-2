@@ -15,7 +15,7 @@ int allNumOfDestinations; //Initializes a global integer variable storing the nu
 string NegInputRides="Invalid input. The number of rides must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
 string NegInputDestinations="Invalid input. The number of destinations must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
 
-struct rideInfo //Structure holding the info for an active ride.
+struct RideInfo //Structure holding the info for an active ride.
 {
     string rideDestination; //String member to hold the destination for a ride.
     string initialPickup; //String member that holds the initial pickup location of a ride.
@@ -55,7 +55,7 @@ protected: //These are protected members that can only be accessed by the public
     bool rented; //Boolean member that stores whether the ride is rented for multiple rides.
     int numOfSeats; //Integer member that stores the number of seats in the car.
     bool *possibleDestinations; //Member that points to an array of bools representing the possible destinations it can go to.
-    rideInfo curRideInfo; //Member that is a structure holding the relevant information for an active ride to the car.
+    RideInfo curRideInfo; //Member that is a structure holding the relevant information for an active ride to the car.
 public:	//These are public methods.
     Ride() //Empty constructor for when there are no parameters.
     {
@@ -115,9 +115,9 @@ public:	//These are public methods.
     virtual int getNumOfReservedSeats(){return 0;}; //Virtual method that returns the number of reserved seats. It is only used in shared rides.
     virtual void setFollowingRideInfo(){}; //Method that sets the locations of the rides following the first one. It is only used in the subclass for rented rides.
     virtual int getNumOfFollowingRides(){return 0;}; //Method that gets the number of following sets of locations after the first one. It is only used in the subclass for rented rides.
-    virtual rideInfo* getFollowingRideInfo() //Method that returns a pointer to the array for following destinations. It is only used in the subclass for rented rides.
+    virtual RideInfo* getFollowingRideInfo() //Method that returns a pointer to the array for following destinations. It is only used in the subclass for rented rides.
     {
-        rideInfo* ptr=&curRideInfo; //Initializes a pointer to curRideInfo as a debugging mechanism, this method should never be called on the parent class.
+        RideInfo* ptr=&curRideInfo; //Initializes a pointer to curRideInfo as a debugging mechanism, this method should never be called on the parent class.
         return ptr; //Returns the pointer.
     };
     virtual void completeCurRide(){}; //Method that completes the current ride. It is only used in the subclass for rented rides.
@@ -354,7 +354,7 @@ class Rented: public Ride //Creates a class to represent a rented ride, as a sub
 {
 private: //These are private members that can only be accessed by the public methods in this class or any friend classes.
     int numOfFollowingRides; //Integer member that stores the number of following rides.
-    rideInfo* followingRideInfo; //Member that points to an array representing the locations after the first one for the duration of the ride. 
+    RideInfo* followingRideInfo; //Member that points to an array representing the locations after the first one for the duration of the ride. 
 public: //These are public methods.
     Rented(int inpNumOfSeats) : Ride(inpNumOfSeats) //Constructor for a rented ride.
     {
@@ -362,7 +362,7 @@ public: //These are public methods.
         rented=true;
         //Sets the above boolean members to true.
         numOfFollowingRides=0; //Sets the number of following rides to 0. This is temporary and will be replaced when the number of following rides is inputted.
-        followingRideInfo=new rideInfo[1]; //Allocates new memory for an array holding the extra ride info for the rented ride. This is temporary and will be deleted when the number of following rides is inputted.
+        followingRideInfo=new RideInfo[1]; //Allocates new memory for an array holding the extra ride info for the rented ride. This is temporary and will be deleted when the number of following rides is inputted.
     }
     Rented(int inpNumOfSeats, bool* prevPosDes) : Ride(inpNumOfSeats,prevPosDes) //Constructor for a ride with possible destinations.
     {   
@@ -370,7 +370,7 @@ public: //These are public methods.
         rented=true;
         //Sets the above boolean members to true.
         numOfFollowingRides=0; //Sets the number of following rides to 0. This is temporary and will be replaced when the number of following rides is inputted.
-        followingRideInfo=new rideInfo[1]; //Allocates new memory for an array holding the extra ride info for the rented ride. This is temporary and will be deleted when the number of following rides is inputted.
+        followingRideInfo=new RideInfo[1]; //Allocates new memory for an array holding the extra ride info for the rented ride. This is temporary and will be deleted when the number of following rides is inputted.
     }; 
     ~Rented() //Destructor for a rented ride.
     {
@@ -379,7 +379,7 @@ public: //These are public methods.
     }; 
     void setFollowingRideInfo(); //Method that sets the info of the rides following the first one.
     int getNumOfFollowingRides() {return numOfFollowingRides;}; //Method that gets the number of following sets of info for the rides after the first one.
-    rideInfo* getFollowingRideInfo() //Method that returns a pointer to the array for following destinations. 
+    RideInfo* getFollowingRideInfo() //Method that returns a pointer to the array for following destinations. 
     {
         return followingRideInfo;
     };
@@ -402,7 +402,7 @@ void Rented::setFollowingRideInfo() //Method that sets the locations of the ride
     
     numOfFollowingRides=inpNumOfFollowingRides; //Stores the input into the member holding the number of following rides.
     delete[] followingRideInfo; //Deletes the temporary memory storing the info for the following rides.
-    followingRideInfo=new rideInfo[numOfFollowingRides+1]; //Allocates new memory for an array holding the extra ride info for the rented ride. This is temporary and will be deleted when the number of following rides is inputted.
+    followingRideInfo=new RideInfo[numOfFollowingRides+1]; //Allocates new memory for an array holding the extra ride info for the rented ride. This is temporary and will be deleted when the number of following rides is inputted.
     
     int inpPickupLocation; //Initializes a local integer variable to store the inputted pickup location.
     int inpDestination; //Initializes a local integer variable to store the inputted destination.
@@ -978,7 +978,7 @@ void RideList::showCars() //Method that prints the status of each car.
             }
             else if (rides[i]->getRented()) //Checks if the car is in a rented ride.
             {
-                rideInfo* thisCarFollowingRideInfo=rides[i]->getFollowingRideInfo(); //Initializes a pointer that points to the following ride info for the rented ride.
+                RideInfo* thisCarFollowingRideInfo=rides[i]->getFollowingRideInfo(); //Initializes a pointer that points to the following ride info for the rented ride.
                 cout<<" (Rented)\n";
                 cout<<"The ride destination for Ride #1: "<<rides[i]->getRideDestination()<<"\n"; //Prints the ride destination.
                 cout<<"The initial pickup location for Ride #1: "<<rides[i]->getInitialPickup()<<"\n"; //Prints the initial pickup for the ride.
