@@ -3,7 +3,7 @@ Name: Rayton Lin
 Teacher: Mr. Noukhovitch
 Class: ICS4U1-03
 Date: January 5th, 2019
-Purpose: This program stores information for a ride sharing app using classes, inheritance, constructors, destructors, functions, exceptions and dynamic memory.
+Purpose: This program stores information for a ride-sharing app with self-driving cars using classes, inheritance, constructors, destructors, functions, exceptions and dynamic memory.
 */
 
 #include <iostream>
@@ -14,12 +14,6 @@ int allNumOfDestinations; //Initializes a global integer variable storing the nu
 
 string NegInputRides="Invalid input. The number of rides must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
 string NegInputDestinations="Invalid input. The number of destinations must be positive.\n"; //Initializes a string global variable to be thrown if the input is negative.
-
-/*struct driverInfo //Structure holder the info for the driver of a car.
-{
-    string name; //String member that holds the name of the driver.
-    
-}*/
 
 struct rideInfo //Structure holding the info for an active ride.
 {
