@@ -611,11 +611,11 @@ void RideList::chooseCommand() //Method that asks the user to input the command 
       }
       else if (inputCommand==10)
       {
-          this->addCar(); //Shows the cars that drive to the destination.
+          this->addCar(); //Adds a car to the list.
       }
       else if (inputCommand==11)
       {
-          this->deleteCar(); //Shows the cars that drive to the destination.
+          this->deleteCar(); //Deletes a car from the list.
       }
       else if (inputCommand==12) //Shows the rides which can drive to the destination.
       {
