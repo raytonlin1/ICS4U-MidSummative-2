@@ -694,7 +694,7 @@ void RideList::printDestinations() //Method that prints each possible destinatio
     if (allNumOfDestinations==1) //This runs if there is only 1 destination in the app.
 	{
 		cout<<"The only destination in the ride-sharing app is:\n";
-		cout<<i<<". "<<allDestinations[1]<<"\n";
+		cout<<"1. "<<allDestinations[1]<<"\n";
 	}
 	else //This block of code runs if there are multiple destinations in the app.
 	{
