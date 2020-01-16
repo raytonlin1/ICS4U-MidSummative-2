@@ -556,6 +556,7 @@ void RideList::chooseCommand() //Method that asks the user to input the command 
     while (inputCommand != 12) //Runs while the command isn't to quit.
     {
       cout<<"\n";
+      cout<<"******************************************CHOOSE COMMAND******************************************\n";
       cout<<"The following commands can be entered.\n";
       cout<<"1. This command makes a reservation for a ride. You will be shown the available cars for the ride. You will be asked for the type of ride, destination and the pickup location.\n";
       cout<<"2. This command sets the number of seats that a car has. It cannot change the number of seats for a car in an active ride.\n";
@@ -689,11 +690,19 @@ void RideList::setEmptyArray() //Method that sets each car in the array to not e
 
 void RideList::printDestinations() //Method that prints each possible destination.
 {
-    cout<<"The destination(s) are:\n";
-    for (int i=1;i<=allNumOfDestinations;i++) //Loops through the destinations.
-    {
-        cout<<i<<". "<<allDestinations[i]<<"\n"; //Prints the name of the destinations.
-    }
+    if (allNumOfDestinations==1) //This runs if there is only 1 destination in the app.
+	{
+		cout<<"The only destination in the ride-sharing app is:\n";
+		cout<<i<<". "<<allDestinations[1]<<"\n";
+	}
+	else //This block of code runs if there are multiple destinations in the app.
+	{
+		cout<<"The destinations are:\n";
+    	for (int i=1;i<=allNumOfDestinations;i++) //Loops through the destinations.
+    	{
+        	cout<<i<<". "<<allDestinations[i]<<"\n"; //Prints the name of the destinations.
+    	}
+	}
 }
 
 void RideList::reserveRide() //Method that reserves a ride.
@@ -1003,7 +1012,7 @@ void RideList::showCars() //Method that prints the status of each car.
             }
             else
             {
-                cout<<"\n";
+                cout<<" (Regular)\n";
                 cout<<"Ride destination: "<<rides[i]->getRideDestination()<<"\n"; //Prints the ride destination.
                 cout<<"Initial Pickup Location for Ride: "<<rides[i]->getInitialPickup()<<"\n"; //Prints the initial pickup for the ride.
             }
@@ -1177,6 +1186,7 @@ void RideList::makeRented(int carNumber) //Method that sets a car to be for a sh
 int main()
 {
   cout<<"Welcome to the ride-sharing app! We use our own self-driving car models. To set the app, we will ask you to input the number of cars that be used for the rides, the number of destinations, the name of the destinations and the parameters of each car.\n\n"; //Tells the user of how to set the app, and adds an extra new line character to set it apart from the next lines that will be printed.
+  cout<<"******************************************SET UP******************************************\n";
   int inpNumOfRides=0,inpNumOfDestinations=0; //Initializes integer variables storing the maximum number of rides and destinations in the ride-sharing app.
   bool notDone=true; //Initializes a local boolean variable to determine if the loop isn't done yet. It is initially set to true.
   do
