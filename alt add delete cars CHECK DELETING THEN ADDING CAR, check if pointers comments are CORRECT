@@ -988,7 +988,8 @@ void RideList::showCars() //Method that prints the status of each car.
             }
             else if (rides[i]->getRented()) //Checks if the car is in a rented ride.
             {
-                RideInfo* thisCarFollowingRideInfo=rides[i]->getFollowingRideInfo(); //Initializes a pointer that points to the following ride info for the rented ride.
+                RideInfo* thisCarFollowingRideInfo=rides[i]->getFollowingRideInfo(); //Initializes a pointer that points to the following ride info for the rented ride. 
+		//This pointer is not deleted as it points to memory that will keep being used after the method is completed.
                 cout<<" (Rented)\n";
                 cout<<"The ride destination for Ride #1: "<<rides[i]->getRideDestination()<<"\n"; //Prints the ride destination.
                 cout<<"The initial pickup location for Ride #1: "<<rides[i]->getInitialPickup()<<"\n"; //Prints the initial pickup for the ride.
@@ -1049,6 +1050,7 @@ void RideList::showCarsToDestination() //Method that shows the cars that can get
     
     bool firstCarPrinted=false; //Initializes a local variable to store if the first car has been printed.
     bool* thisCarPossibleDestinations; //Initializes a pointer to point to the array that stores the possible destinations of the car.
+    //This pointer is not deleted as it points to memory that will keep being used after the method is completed.
     cout<<"The numbers of the cars that can go to this destination are:";
     for (int i=1;i<=totalNumOfRides;i++) //Loops through each car.
     {
@@ -1149,6 +1151,7 @@ void RideList::makeRegular(int carNumber) //Method that sets a car to be for a r
     int prevNumOfSeats=rides[carNumber]->getNumOfSeats(); //Initializes a local variable to store the number of seats of the car who will have a shared ride.
     bool* thisCarPossibleDestinations=rides[carNumber]->getPossibleDestinations(); //Initializes a pointer to point to the array that stores the possible destinations of the car.
     bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
+    //These pointers are not deleted as it points to memory that will keep being used after the method is completed.
     for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
     {
         prevPossibleDestinations[i]=thisCarPossibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
@@ -1163,6 +1166,7 @@ void RideList::makeShared(int carNumber) //Method that sets a car to be for a sh
     int prevNumOfSeats=rides[carNumber]->getNumOfSeats(); //Initializes a local variable to store the number of seats of the car who will have a shared ride.
     bool* thisCarPossibleDestinations=rides[carNumber]->getPossibleDestinations(); //Initializes a pointer to point to the array that stores the possible destinations of the car.
     bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
+    //These pointers are not deleted as it points to memory that will keep being used after the method is completed.
     for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
     {
         prevPossibleDestinations[i]=thisCarPossibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
@@ -1176,6 +1180,7 @@ void RideList::makeRented(int carNumber) //Method that sets a car to be for a sh
     int prevNumOfSeats=rides[carNumber]->getNumOfSeats(); //Initializes a local variable to store the number of seats of the car who will have a shared ride.
     bool* thisCarPossibleDestinations=rides[carNumber]->getPossibleDestinations(); //Initializes a pointer to point to the array that stores the possible destinations of the car.
     bool* prevPossibleDestinations=new bool[allNumOfDestinations+1]; //Initializes a local variable to store the an auxillary array holding the possible destinations of the car who will have a shared ride.
+    //These pointers are not deleted as it points to memory that will keep being used after the method is completed.
     for (int i=0;i<=allNumOfDestinations;i++) //Loops through each index in the array.
     {
         prevPossibleDestinations[i]=thisCarPossibleDestinations[i]; //Stores the values of each index in the array holding the possible destinations of the car who will have a shared ride in the auxillary array.
