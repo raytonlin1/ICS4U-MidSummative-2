@@ -61,6 +61,7 @@ public:	//These are public methods.
     {
         exists=false;
         //Sets the exists member to false to show that the car hasn't been created.
+        possibleDestinations=new bool[1]; //Sets the possibleDestinations member to a small array, which will be deleted by the destructor when the index the car is in is replaced by a car that has its parameters set and will exist. 
     }; 
     Ride(int inpNumOfSeats) //Constructor for a ride.
     {   
