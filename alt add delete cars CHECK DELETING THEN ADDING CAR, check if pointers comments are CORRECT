@@ -951,7 +951,7 @@ void RideList::completeCurRideFromList() //Method that completes the current rid
         rides[carNumber]->completeCurRide(); //Completes the current ride.
         if (rides[carNumber]->getNumOfFollowingRides()==-1 && rides[carNumber]->getHours()==-1) //Checks if there are no following rides and no current ride.
         {
-            cout<<"This car has no remaining rides for its rented ride, so its member values will be reset and it will become used for a regular ride again.\n";
+            cout<<"This car has no remaining rides for its rented ride, so its member values will be reset and it will be set to be used for a regular ride again.\n";
             this->makeRegular(carNumber); //Resets the car to be for a regular ride again.
         }
     }
@@ -959,6 +959,7 @@ void RideList::completeCurRideFromList() //Method that completes the current rid
 
 void RideList::showCars() //Method that prints the status of each car.
 {
+    cout<<"The numbers for the cars can go from 1 to "<<totalNumOfRides<<".\n";
     bool carShown=false; //Initializes a local boolean variable that stores whether a car was shown.
     for (int i=1;i<=totalNumOfRides;i++) //Loops through each car.
     {
