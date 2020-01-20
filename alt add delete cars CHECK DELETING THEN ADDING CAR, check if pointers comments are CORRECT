@@ -25,7 +25,7 @@ struct RideInfo //Structure holding the info for an active ride.
 
 void askForNumOfRides(int &inp) //Function that asks for the number of rides from the user.
 {
-    cout << "Enter the number of rides that will be stored. Car ID numbers will go from 1 to this number: ";
+    cout << "Enter the (integer) number of rides that will be stored. Car ID numbers will go from 1 to this number: ";
     cin >> inp; //Stores the input.
     cout << "\n"; //Asks for an inputted number for the number of rides.
     if (inp<1) //Checks if the input is valid.
@@ -37,7 +37,7 @@ void askForNumOfRides(int &inp) //Function that asks for the number of rides fro
 void askForNumOfDestinations(int &inp) //Function that asks for the number of destinations from the user.
 {
     cout<<"Each destination in this app will also be a pickup location.\n";
-    cout << "Enter the number of destinations: ";
+    cout << "Enter the (integer) number of destinations: ";
     cin >> inp; //Stores the input.
     cout << "\n"; //Asks for an inputted number for the number of destinations.
     if (inp<1) //Checks if the input is valid.
@@ -167,7 +167,7 @@ void Ride::setNumOfSeats() //Method that sets the number of seats for the car.
     int inpSeats; //Initializes a local integer variable to store the number of seats.
     do
     {
-        cout<<"Enter the number of seats: ";
+        cout<<"Enter the (integer) number of seats: ";
         cin>>inpSeats; //Stores the input.
         cout<<"\n";
         if (inpSeats<1) //Checks if the inputted number of seats is negative.
@@ -187,7 +187,7 @@ void Ride::setRideDestination() //Method that sets the destination of a ride.
     int inpDestination; //Initializes a local integer variable to store the inputted destination.
     do
     {
-        cout<<"Enter the number of the destination: ";
+        cout<<"Enter the (integer) number of the destination: ";
         cin>>inpDestination; //Stores the input.
         cout<<"\n";
         if (inpDestination>allNumOfDestinations||inpDestination<1) //Checks if the input is within the boundaries.
@@ -216,7 +216,7 @@ void Ride::setInitialPickup() //Method that sets the initial pickup location.
     int inpDestination; //Initializes a local integer variable to store the inputted destination.
     do
     {
-        cout<<"Enter the number of the destination that will be the pickup location: ";
+        cout<<"Enter the (integer) number of the destination that will be the pickup location: ";
         cin>>inpDestination; //Stores the input.
         cout<<"\n";
         if (inpDestination>allNumOfDestinations||inpDestination<1) //Checks if the input is within the boundaries.
@@ -244,7 +244,7 @@ void Ride::setPickupTime() //Method that sets the time when the ride will arrive
     int inpHours,inpMinutes; //Initializes local variables to store the inputted hours and minutes.
     do
     {
-        cout<<"Enter the hour value of the pickup time you want, in 24 hour mode: ";
+        cout<<"Enter the (integer) hour value of the pickup time you want, in 24 hour mode: ";
         cin>>inpHours; //Stores the input.
         cout<<"\n";
         if (inpHours>23||inpHours<0)
@@ -255,7 +255,7 @@ void Ride::setPickupTime() //Method that sets the time when the ride will arrive
 
     do
     {
-        cout<<"Enter the minute value of the pickup time you want: ";
+        cout<<"Enter the (integer) minute value of the pickup time you want: ";
         cin>>inpMinutes; //Stores the input.
         cout<<"\n";
         if (inpMinutes>59||inpMinutes<0)
@@ -306,7 +306,7 @@ void Shared::reserveSeats() //Method that reserves seats.
     bool notDone=true;//Initializes if the function is not done.
     do
     {
-        cout<<"Enter the number of seats to be reserved (where an input of 0 cancels the reservation): ";
+        cout<<"Enter the (integer) number of seats to be reserved (where an input of 0 cancels the reservation): ";
         cin>>inpSeats; //Stores the input.
         cout<<"\n";
         if (inpSeats<0) //Checks if the inputted number of seats is negative.
@@ -328,7 +328,7 @@ void Shared::reserveSeats() //Method that reserves seats.
 bool Shared::unreserveSeats() //Method that unreserves seats.
 {
     int inpSeats; //Initializes a local integer variable to store the number of seats.
-    cout<<"Enter the number of seats to be unreserved: ";
+    cout<<"Enter the (integer) number of seats to be unreserved: ";
     cin>>inpSeats; //Stores the input.
     cout<<"\n";
     if (inpSeats<0) //Checks if the inputted number of seats is negative.
@@ -392,7 +392,7 @@ void Rented::setFollowingRideInfo() //Method that sets the locations of the ride
     int inpNumOfFollowingRides; //Initializes a local integer variable to store the number of rides that follow the first one.
     do
     {
-        cout<<"Enter the number of following rides: ";
+        cout<<"Enter the (integer) number of following rides: ";
         cin>>inpNumOfFollowingRides; //Stores the input.
         cout<<"\n";
         if (inpNumOfFollowingRides<1) //Checks if the input is valid.
@@ -417,7 +417,7 @@ void Rented::setFollowingRideInfo() //Method that sets the locations of the ride
         this->printPossibleDestinations(); //Prints the possible destinations of the ride to the reader.
         do
         {
-            cout<<"Enter the number of the destination: ";
+            cout<<"Enter the (integer) number of the destination: ";
             cin>>inpDestination; //Stores the input.
             cout<<"\n";
             if (inpDestination>allNumOfDestinations||inpDestination<1) //Checks if the input is within the boundaries.
@@ -438,7 +438,7 @@ void Rented::setFollowingRideInfo() //Method that sets the locations of the ride
         this->printPossibleDestinations(); //Prints the possible destinations of the ride to the reader where the car can pick up the customer.
         do
         {
-            cout<<"Enter the number of the destination that will be your pickup location: ";
+            cout<<"Enter the (integer) number of the destination that will be your pickup location: ";
             cin>>inpPickupLocation; //Stores the input.
             cout<<"\n";
             if (inpPickupLocation>allNumOfDestinations||inpPickupLocation<1) //Checks if the input is within the boundaries.
@@ -457,7 +457,7 @@ void Rented::setFollowingRideInfo() //Method that sets the locations of the ride
 
         do
         {
-            cout<<"Enter the hour value of the pickup time you want, in 24 hour mode: ";
+            cout<<"Enter the (integer) hour value of the pickup time you want, in 24 hour mode: ";
             cin>>inpHours; //Stores the input.
             cout<<"\n";
             if (inpHours>23||inpHours<0)
@@ -468,7 +468,7 @@ void Rented::setFollowingRideInfo() //Method that sets the locations of the ride
 
         do
         {
-            cout<<"Enter the minute value of the pickup time you want: ";
+            cout<<"Enter the (integer) minute value of the pickup time you want: ";
             cin>>inpMinutes; //Stores the input.
             cout<<"\n";
             if (inpMinutes>59||inpMinutes<0)
@@ -571,7 +571,7 @@ void RideList::chooseCommand() //Method that asks the user to input the command 
       cout<<"10. This command adds a car in the array.\n";
       cout<<"11. This command deletes a car in the array.\n";
       cout<<"12. The quit command exits the program.\n";
-      cout << "Enter your command, as a number: ";
+      cout << "Enter your command, as an (integer) number: ";
 	  cin >> inputCommand; //Stores the input.
       cout << "\n";
       if (inputCommand==1)
@@ -633,7 +633,7 @@ void RideList::setDestinations() //Method that asks for inputs and sets the dest
 {
     if (allNumOfDestinations==1) //Checks if there is only 1 destination.
     {
-        cout<<"Enter the name of the destination: ";
+        cout<<"Enter the (string) name of the destination: ";
         cin.ignore(); //Used to ignore any newline character from a previous use of cin, so getline(cin,inputStr) will obtain inputs correctly.
         allDestinations=new string[2]; //Creates memory for the array holding the destinations.
         getline(cin,allDestinations[1]); //Obtains input for the name of the destination, storing it in the array.
@@ -648,7 +648,7 @@ void RideList::setDestinations() //Method that asks for inputs and sets the dest
         cin.ignore(); //Used to ignore any newline character from a previous use of cin, so getline(cin,inputStr) will obtain inputs correctly.
         for (int i=1;i<=allNumOfDestinations;i++) //Loops through each destination.
         {
-            cout<<"Enter the name of destination #"<<i<<": ";
+            cout<<"Enter the (string) name of destination #"<<i<<": ";
             ptr++; //Makes the pointer go to the next index in memory.
             getline(cin,inputStr); //Obtains input for the name of the destination, storing it in the array.
             cout<<"\n";
@@ -666,7 +666,7 @@ void RideList::setCars() //Method that sets the cars in the list.
         cout<<"Enter the information for Car #"<<i<<".\n";
         do
         {
-            cout<<"Enter the number of seats in the car: ";
+            cout<<"Enter the (integer) number of seats in the car: ";
             cin>>inpNumOfSeats; //Stores the input.
             cout<<"\n";
             if (inpNumOfSeats<1) //Checks if the input is not positive.
@@ -710,7 +710,7 @@ void RideList::reserveRide() //Method that reserves a ride.
 {
     this->showCars(); //Shows the status of each car for the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the ride that you would like to take: ";
+    cout<<"Choose the (integer) number of the ride that you would like to take: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
@@ -790,7 +790,7 @@ void RideList::setNumOfSeatsFromList() //Method that sets the number of seats th
 {
     this->showCars(); //Shows the status of each car to the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the ride that you would like to set the number of seats for: ";
+    cout<<"Choose the (integer) number of the ride that you would like to set the number of seats for: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
@@ -816,7 +816,7 @@ void RideList::setPossibleDestinationsFromList() //Method that sets the possible
 {
     this->showCars(); //Shows the status of each car to the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the ride that you would like to set the number of seats for: ";
+    cout<<"Choose the (integer) number of the ride that you would like to set the number of seats for: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
@@ -842,7 +842,7 @@ void RideList::reserveSeatsFromList()
 {
     this->showCars(); //Shows the status of each car to the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the ride that you would like to take: ";
+    cout<<"Choose the (integer) number of the ride in which you would like to reserve seats: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
@@ -868,7 +868,7 @@ void RideList::unreserveSeatsFromList()
 {
     this->showCars(); //Shows the status of each car to the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the ride that you would like to unreserve seats from: ";
+    cout<<"Choose the (integer) number of the ride that you would like to unreserve seats from: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
@@ -897,7 +897,7 @@ void RideList::completeCurRideFromList() //Method that completes the current rid
 {
     this->showCars(); //Shows the status of each car to the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the car in a rented ride that you would like to complete the current ride of: ";
+    cout<<"Choose the (integer) number of the car in a rented ride that you would like to complete the current ride of: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
@@ -928,7 +928,7 @@ void RideList::complete() //Method that completes a ride.
 {
     this->showCars(); //Shows the status of the cars for the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the car whose ride has completed: ";
+    cout<<"Choose the (integer) number of the car whose ride has completed: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
@@ -1040,7 +1040,7 @@ void RideList::showCarsToDestination() //Method that shows the cars that can get
     int inpDestinationNo; //Initializes a local integer variable to store the number of the destination that is being inputted.
     do
     {
-        cout<<"Enter the number of the destination: ";
+        cout<<"Enter the (integer) number of the destination: ";
         cin>>inpDestinationNo; //Stores the input.
         cout<<"\n";
         if (inpDestinationNo>allNumOfDestinations||inpDestinationNo<1) //Checks if the input is valid.
@@ -1084,7 +1084,7 @@ void RideList::addCar() //Method that adds a car to the array.
 {
     this->showCars(); //Shows the status of the cars for the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the car who will be added: ";
+    cout<<"Choose the (integer) number of the car who will be added: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
@@ -1103,7 +1103,7 @@ void RideList::addCar() //Method that adds a car to the array.
         cout<<"Enter the information for Car #"<<carNumber<<".\n";
         do
         {
-            cout<<"Enter the number of seats in the car: ";
+            cout<<"Enter the (integer) number of seats in the car: ";
             cin>>inpNumOfSeats; //Stores the input.
             cout<<"\n";
             if (inpNumOfSeats<1) //Checks if the input is not positive.
@@ -1123,7 +1123,7 @@ void RideList::deleteCar() //Method that deletes a car from the array.
 {
     this->showCars(); //Shows the status of the cars for the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
-    cout<<"Choose the number of the car who will be deleted: ";
+    cout<<"Choose the (integer) number of the car who will be deleted: ";
     cin>>carNumber; //Stores the input.
     cout<<"\n";
 
