@@ -1192,7 +1192,7 @@ void RideList::makeRented(int carNumber) //Method that sets a car to be for a sh
 
 int main()
 {
-  cout<<"Welcome to the ride-sharing app! We use our own self-driving car models. To set the app, we will ask you to input the number of cars that be used for the rides, the number of destinations, the name of the destinations and the parameters of each car.\n\n"; //Tells the user of how to set the app, and adds an extra new line character to set it apart from the next lines that will be printed.
+  cout<<"Welcome to the ride-sharing app! We use our own self-driving car models. To set the app, we will ask you to input the number of cars that be used for the rides, the number of destinations, the name of the destinations and the parameters of each car.\n\n"; //Tells the user how to set up the app, and adds an extra new line character to set it apart from the next lines that will be printed.
   cout<<"******************************************SET UP******************************************\n";
   int inpNumOfRides=0,inpNumOfDestinations=0; //Initializes integer variables storing the maximum number of rides and destinations in the ride-sharing app.
   bool notDone=true; //Initializes a local boolean variable to determine if the loop isn't done yet. It is initially set to true.
