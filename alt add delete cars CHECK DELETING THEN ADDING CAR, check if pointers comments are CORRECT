@@ -112,7 +112,7 @@ public:	//These are public methods.
     void setPickupTime(); //Method that sets the time when the ride will arrive at the pickup location.
     void setPickupTime(int inpHours, int inpMinutes); //Overloaded method that sets the time when the ride will arrive at the pickup location given inputted parameters.
     virtual void reserveSeats(){}; //Virtual method that reserves seats. It is only used in shared rides.
-    virtual bool unreserveSeats(){return true;}; //Virtual method that unreserves seats. It is only used in shared rides.
+    virtual bool unreserveSeats(){return true;}; //Virtual method that removes reserved seats. It is only used in shared rides.
     virtual int getNumOfReservedSeats(){return 0;}; //Virtual method that returns the number of reserved seats. It is only used in shared rides.
     virtual void setFollowingRideInfo(){}; //Method that sets the locations of the rides following the first one. It is only used in the subclass for rented rides.
     virtual int getNumOfFollowingRides(){return 0;}; //Method that gets the number of following sets of locations after the first one. It is only used in the subclass for rented rides.
@@ -277,7 +277,7 @@ void Ride::setPickupTime(int inpHours,int inpMinutes) //Overloaded method that s
 
 class Shared: public Ride //Creates a class to represent a shared ride, as a subclass of the regular Ride class.
 {
-private: //These are protected members that can only be accessed by the public methods in this class or any subclasses.
+private: //These are private members that can only be accessed by the public methods in this class.
     int numOfReservedSeats; //Integer member storing the number of reserved seats.
 public: //These are public methods.
     Shared(int inpNumOfSeats) : Ride(inpNumOfSeats) //Constructor for a shared ride.
@@ -296,7 +296,7 @@ public: //These are public methods.
     };
     ~Shared() {delete[] possibleDestinations;}; //Destructor for a shared ride.
     void reserveSeats(); //Method that reserves seats.
-    bool unreserveSeats(); //Method that unreserves seats.
+    bool unreserveSeats(); //Method that removes reserved seats.
     int getNumOfReservedSeats(){return numOfReservedSeats;}; //Method that returns the number of reserved seats.
 };
 
@@ -325,7 +325,7 @@ void Shared::reserveSeats() //Method that reserves seats.
     }while(notDone); //Runs while it has been indicated that the function has not finished.
 }
 
-bool Shared::unreserveSeats() //Method that unreserves seats.
+bool Shared::unreserveSeats() //Method that removes reserved seats.
 {
     int inpSeats; //Initializes a local integer variable to store the number of seats.
     cout<<"Enter the (integer) number of seats to be unreserved: ";
@@ -353,7 +353,7 @@ bool Shared::unreserveSeats() //Method that unreserves seats.
 
 class Rented: public Ride //Creates a class to represent a rented ride, as a subclass of the regular Ride class.
 {
-private: //These are private members that can only be accessed by the public methods in this class or any friend classes.
+private: //These are private members that can only be accessed by the public methods in this class.
     int numOfFollowingRides; //Integer member that stores the number of following rides.
     RideInfo* followingRideInfo; //Member that points to an array representing the locations after the first one for the duration of the ride.
 public: //These are public methods.
@@ -523,7 +523,7 @@ public:
     void setNumOfSeatsFromList(); //Method that sets the number of seats that a car has.
     void setPossibleDestinationsFromList(); //Method that sets the possible destinations for a car.
     void reserveSeatsFromList(); //Method that reserves seats for a shared ride.
-    void unreserveSeatsFromList(); //Method that unreserves seats for a shared ride.
+    void unreserveSeatsFromList(); //Method that removes reserved seats for a shared ride.
     void completeCurRideFromList(); //Method that completes the current ride for a rented ride in the list.
     void complete(); //Method that completes a ride.
     void showCars(); //Method that prints the status of each car.
@@ -592,7 +592,7 @@ void RideList::chooseCommand() //Method that asks the user to input the command 
       }
       else if (inputCommand==5)
       {
-          this->unreserveSeatsFromList(); //Unreserves seats for a shared ride.
+          this->unreserveSeatsFromList(); //Removes reserved seats for a shared ride.
       }
       else if (inputCommand==6)
       {
@@ -838,7 +838,7 @@ void RideList::setPossibleDestinationsFromList() //Method that sets the possible
     }
 }
 
-void RideList::reserveSeatsFromList()
+void RideList::reserveSeatsFromList() //Reserves seats for a shared ride.
 {
     this->showCars(); //Shows the status of each car to the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
@@ -864,7 +864,7 @@ void RideList::reserveSeatsFromList()
     }
 }
 
-void RideList::unreserveSeatsFromList()
+void RideList::unreserveSeatsFromList() //Removes reserved seats from the shared ride.
 {
     this->showCars(); //Shows the status of each car to the user.
     int carNumber; //Initializes a local integer variable to store the number of the car that will be chosen.
@@ -886,7 +886,7 @@ void RideList::unreserveSeatsFromList()
     }
     else
     {
-        if (!rides[carNumber]->unreserveSeats()) //Unreserves seats and checks if the ride has no seats left that were reserved.
+        if (!rides[carNumber]->unreserveSeats()) //Removes reserved seats and checks if the ride has no seats left that were reserved.
         {
             this->makeRegular(carNumber); //Resets the car to be for a regular ride again.
         }
@@ -1018,6 +1018,14 @@ void RideList::showCars() //Method that prints the status of each car.
                 cout<<" (Regular)\n";
                 cout<<"Ride destination: "<<rides[i]->getRideDestination()<<"\n"; //Prints the ride destination.
                 cout<<"Initial Pickup Location for Ride: "<<rides[i]->getInitialPickup()<<"\n"; //Prints the initial pickup for the ride.
+                if (rides[i]->getMinutes()<10) //Checks if the minute value is a single digit number.
+                {
+                    cout<<"The pickup time is "<<rides[i]->getHours()<<":0"<<rides[i]->getMinutes()<<".\n"; //Prints the pickup time for the ride.
+                }
+                else
+                {
+                    cout<<"The pickup time is "<<rides[i]->getHours()<<":"<<rides[i]->getMinutes()<<".\n"; //Prints the pickup time for the ride.
+                }
             }
         }
         else
@@ -1242,21 +1250,7 @@ int main()
   }
 
   rides->chooseCommand(); //Asks the user to input a command until they quit.
-
+  cout<<"Thank you for using this ride-sharing app!\n";
   delete rides; //Deletes rides as it is dynamic memory.
   return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
